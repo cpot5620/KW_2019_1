@@ -3,7 +3,7 @@
 #include <string.h>
 
 void test();
-
+char text[100] = "ABCDEFGHIJKLMN abcdefgh";
 int main() {
     char c;
     char buffer[100];
@@ -13,6 +13,8 @@ int main() {
 
     initscr(); /// to use ncurses
     clear();   /// window clear
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
 
     for (j = 0; j < 100; j++)
@@ -34,15 +36,21 @@ int main() {
             i = 0;
 
             for (j = 0; j < 100; j++) {
-                if (buffer[j]) /// we need to add function for comparing two
-                               /// words
-
-                    buffer[j] = '\0'; /// after above function, buffer clear
+                buffer[j] = '\0'; /// buffer clear
             }
         } else {
-            putchar(c);
+
             buffer[i] = c;
+            addch(c);
+            if (buffer[i] != text[i]) {
+                move(line - 1, i);
+                attron(COLOR_PAIR(1));
+                addch(text[i]);
+                attroff(COLOR_PAIR(1));
+                move(line, i + 1);
+            }
             i++;
+            refresh();
         }
     }
     endwin();
@@ -50,11 +58,5 @@ int main() {
 
 void test() {
     int line = 0;
-    addstr("This is Sample Text");
-    line += 2;
-    move(line, 0);
-    addstr("you can type English");
-    line += 2;
-    move(line, 0);
-    addstr("DSS Project");
+    addstr(text);
 }
