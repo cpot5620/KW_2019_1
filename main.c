@@ -3,10 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void test();
-char text[100] = "ABCDEFGHIJKLMN abcdefgh";
-int main() {
-
+char **word() {
     // store txt file line by line to array
     int lines_allocated = 128;
     int max_line_len = 100;
@@ -58,16 +55,19 @@ int main() {
     }
     /* Close file */
     fclose(fp);
+    return words;
+}
 
-    int j;
-    for (j = 0; j < i; j++)
-        printf("%s\n", words[j]);
-    // store finish~~
+void test();
+char text[100] = "ABCDEFGHIJKLMN abcdefgh";
+int main() {
 
+    char **words = word();
+    int i = 0;
+    int j = 0;
+    int m = 0;
     char c;
     char buffer[100];
-    i = 0;
-    j = 0;
     int line = 1;
 
     initscr(); /// to use ncurses
@@ -80,7 +80,6 @@ int main() {
         buffer[j] = '\0'; /// to clear array
 
     test();
-
     move(1, 0);
 
     refresh(); // window refresh
@@ -89,6 +88,7 @@ int main() {
         c = getchar();
         if (c == '\r') { // move to forward of line
             line += 2;
+            m += 1;
             move(line, 0);
             printf("\r");
             refresh();
@@ -101,10 +101,10 @@ int main() {
 
             buffer[i] = c;
             addch(c);
-            if (buffer[i] != text[i]) {
+            if (buffer[i] != words[m][i]) {
                 move(line - 1, i);
                 attron(COLOR_PAIR(1));
-                addch(text[i]);
+                addch(words[m][i]);
                 attroff(COLOR_PAIR(1));
                 move(line, i + 1);
             }
@@ -114,6 +114,7 @@ int main() {
     }
     endwin();
 
+    i = 23;
     /* Good practice to free memory */
     for (; i >= 0; i--)
         free(words[i]);
@@ -121,6 +122,16 @@ int main() {
 }
 
 void test() {
+    char **words = word();
     int line = 0;
-    addstr(text);
+    // just print 10 lines
+    for (int j = 0; j < 10; ++j) {
+        move(line, 0);
+        addstr(words[j]);
+        line += 2;
+    }
+    int i = 23;
+    for (; i >= 0; i--)
+        free(words[i]);
+    free(words);
 }
