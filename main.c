@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
+#include <time.h>
 
 char **word() {
     // store txt file line by line to array
@@ -69,6 +71,9 @@ int main() {
     char c;
     char buffer[100];
     int line = 1;
+    time_t start = 0, end = 0;
+    float gap = 0, tasu = 1;
+    int typing = 0;
 
     initscr(); /// to use ncurses
     clear();   /// window clear
@@ -79,6 +84,7 @@ int main() {
     for (j = 0; j < 100; j++)
         buffer[j] = '\0'; /// to clear array
 
+    time(&start);
     test();
     move(1, 0);
 
@@ -97,6 +103,17 @@ int main() {
             for (j = 0; j < 100; j++) {
                 buffer[j] = '\0'; /// buffer clear
             }
+            if (line == 21) {
+                time(&end);
+                gap = end - start;
+                tasu = 60 * (typing / gap);
+
+                // move(24, 1);
+                printw("time : %.1f\n", (float)gap);
+                printw("ta-su : %.1f\n", tasu);
+
+                // break;
+            }
         } else {
 
             buffer[i] = c;
@@ -109,16 +126,17 @@ int main() {
                 move(line, i + 1);
             }
             i++;
+            typing++;
             refresh();
         }
     }
-    endwin();
 
     i = 23;
     /* Good practice to free memory */
     for (; i >= 0; i--)
         free(words[i]);
     free(words);
+    endwin();
 }
 
 void test() {
