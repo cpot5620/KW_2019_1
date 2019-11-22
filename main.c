@@ -5,8 +5,18 @@
 #include <sys/time.h>
 #include <time.h>
 
-char **word() {
-    // store txt file line by line to array
+int choose() {
+    int choice;
+    printf("choose number\n");
+    printf("1. Guliver's Travels\n");
+    printf("2. Rapunzel\n");
+    printf("Your choice: ");
+    scanf("%d", &choice);
+    fflush(stdin);
+    return choice;
+}
+
+char **alloArray(FILE *fp) {
     int lines_allocated = 128;
     int max_line_len = 100;
 
@@ -16,15 +26,7 @@ char **word() {
         fprintf(stderr, "Out of memory (1).\n");
         exit(1);
     }
-
-    FILE *fp = fopen("GreatestLoveOfAll.txt", "r");
-    if (fp == NULL) {
-        fprintf(stderr, "Error opening file.\n");
-        exit(2);
-    }
-
-    int i;
-    for (i = 0; 1; i++) {
+    for (int i = 0; 1; i++) {
         int j;
 
         /* Have we gone over our line allocation? */
@@ -55,16 +57,58 @@ char **word() {
             ;
         words[i][j + 1] = '\0';
     }
-    /* Close file */
-    fclose(fp);
     return words;
 }
 
-void test();
-char text[100] = "ABCDEFGHIJKLMN abcdefgh";
-int main() {
+char **word(int n) {
+    // store txt file line by line to array
+    int lines_allocated = 128;
+    int max_line_len = 100;
+    char **words;
+    /* Allocate lines of text */
 
-    char **words = word();
+    if (n == 1) {
+        FILE *fp = fopen("Guliver'sTravels.txt", "r");
+        if (fp == NULL) {
+            fprintf(stderr, "Error opening file.\n");
+            exit(2);
+        }
+
+        words = alloArray(fp);
+        /* Close file */
+        fclose(fp);
+    } else if (n == 2) {
+        FILE *fp = fopen("Rapunzel.txt", "r");
+        if (fp == NULL) {
+            fprintf(stderr, "Error opening file.\n");
+            exit(2);
+        }
+
+        words = alloArray(fp);
+        /* Close file */
+        fclose(fp);
+    }
+
+    return words;
+}
+
+void printWriting(int n) {
+    char **words = word(n);
+    int line = 0;
+    // just print 10 lines
+    for (int j = 0; j < 10; ++j) {
+        move(line, 0);
+        addstr(words[j]);
+        line += 2;
+    }
+    int i = 23;
+    for (; i >= 0; i--)
+        free(words[i]);
+    free(words);
+}
+
+int main() {
+    char **words;
     int i = 0;
     int j = 0;
     int m = 0;
@@ -74,6 +118,13 @@ int main() {
     time_t start = 0, end = 0;
     float gap = 0, tasu = 1;
     int typing = 0;
+    int choice;
+
+    // read a number to select the writing
+    choice = choose();
+    words = word(choice);
+
+    fflush(stdin);
 
     initscr(); /// to use ncurses
     clear();   /// window clear
@@ -84,8 +135,8 @@ int main() {
     for (j = 0; j < 100; j++)
         buffer[j] = '\0'; /// to clear array
 
+    printWriting(choice);
     time(&start);
-    test();
     move(1, 0);
 
     refresh(); // window refresh
@@ -137,19 +188,4 @@ int main() {
         free(words[i]);
     free(words);
     endwin();
-}
-
-void test() {
-    char **words = word();
-    int line = 0;
-    // just print 10 lines
-    for (int j = 0; j < 10; ++j) {
-        move(line, 0);
-        addstr(words[j]);
-        line += 2;
-    }
-    int i = 23;
-    for (; i >= 0; i--)
-        free(words[i]);
-    free(words);
 }
