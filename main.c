@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <time.h>
 
+// user input number to select the writing
 int choose() {
     int choice;
     printf("choose number\n");
@@ -15,7 +16,7 @@ int choose() {
     fflush(stdin);
     return choice;
 }
-
+// store txt file line by line to array
 char **alloArray(FILE *fp) {
     int lines_allocated = 128;
     int max_line_len = 100;
@@ -59,13 +60,11 @@ char **alloArray(FILE *fp) {
     }
     return words;
 }
-
+// open the selected txt file
 char **word(int n) {
-    // store txt file line by line to array
     int lines_allocated = 128;
     int max_line_len = 100;
     char **words;
-    /* Allocate lines of text */
 
     if (n == 1) {
         FILE *fp = fopen("Guliver'sTravels.txt", "r");
@@ -91,7 +90,7 @@ char **word(int n) {
 
     return words;
 }
-
+// print 10 lines
 void printWriting(int n) {
     char **words = word(n);
     int line = 0;
@@ -123,8 +122,6 @@ int main() {
     // read a number to select the writing
     choice = choose();
     words = word(choice);
-
-    fflush(stdin);
 
     initscr(); /// to use ncurses
     clear();   /// window clear
