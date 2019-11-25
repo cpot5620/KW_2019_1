@@ -118,7 +118,8 @@ int main() {
     float gap = 0, tasu = 1;
     int typing = 0;
     int choice;
-
+    int red = 0;
+    float per;
     // read a number to select the writing
     choice = choose();
     words = word(choice);
@@ -155,27 +156,45 @@ int main() {
                 time(&end);
                 gap = end - start;
                 tasu = 60 * (typing / gap);
+                per = (float)typing - (float)red;
+                per /= (float)typing;
+                per *= 100;
 
                 // move(24, 1);
-                printw("time : %.1f\n", (float)gap);
+                printw("time : %.1f sec\n", (float)gap);
                 printw("ta-su : %.1f\n", tasu);
+                printw("accuracy : %.1f %\n", per);
 
-                // break;
+                printw("if you want to quit, press key 'ESC'\n");
             }
         } else {
-
-            buffer[i] = c;
-            addch(c);
-            if (buffer[i] != words[m][i]) {
+            if (c != 127) {
+                buffer[i] = c;
+                addch(c);
+                if (buffer[i] != words[m][i]) {
+                    move(line - 1, i);
+                    attron(COLOR_PAIR(1));
+                    addch(words[m][i]);
+                    attroff(COLOR_PAIR(1));
+                    move(line, i + 1);
+                    red++;
+                }
+                i++;
+                typing++;
+                refresh();
+            } else { /// if input is backspacebar
+                if (i == 0)
+                    continue;
+                i--;
+                typing--;
+                red--;
+                move(line, i);
+                addch(*" ");
                 move(line - 1, i);
-                attron(COLOR_PAIR(1));
                 addch(words[m][i]);
-                attroff(COLOR_PAIR(1));
-                move(line, i + 1);
+                move(line, i);
+                refresh();
             }
-            i++;
-            typing++;
-            refresh();
         }
     }
 
