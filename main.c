@@ -142,6 +142,15 @@ int main() {
     while (c != 0x1B) { /// ESC is 0x1B in ASCII
         c = getchar();
         if (c == '\r') { // move to forward of line
+            while (words[m][i] != NULL) {
+                move(line - 1, i);
+                attron(COLOR_PAIR(1));
+                addch(words[m][i]);
+                attroff(COLOR_PAIR(1));
+                move(line, i + 1);
+                red++;
+                i++;
+            }
             line += 2;
             m += 1;
             move(line, 0);
@@ -169,6 +178,18 @@ int main() {
             }
         } else {
             if (c != 127) {
+                if (words[m][i] == NULL) {
+                    line += 2;
+                    m += 1;
+                    move(line, 0);
+                    printf("\r");
+                    refresh();
+                    i = 0;
+                    for (j = 0; j < 100; j++) {
+                        buffer[j] = '\0'; /// buffer clear
+                    }
+                    continue;
+                }
                 buffer[i] = c;
                 addch(c);
                 if (buffer[i] != words[m][i]) {
