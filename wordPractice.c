@@ -162,9 +162,5 @@ int main() {
             refresh();
         }
     }
-
-    printf("%s", buffer);
-    printf("%s", answer);
-    printf("%d", red);
     endwin();
 }
