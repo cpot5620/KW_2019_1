@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <time.h>
 
+int tot = 0;
 // user input number to select the writing
 int choose() {
     int choice;
@@ -57,6 +58,9 @@ char **alloArray(FILE *fp) {
              j >= 0 && (words[i][j] == '\n' || words[i][j] == '\r'); j--)
             ;
         words[i][j + 1] = '\0';
+    }
+    for (int k = 0; k < 10; k++) {
+        tot += sizeof(words[k]);
     }
     return words;
 }
@@ -136,7 +140,6 @@ int main() {
     printWriting(choice);
     time(&start);
     move(1, 0);
-
     refresh(); // window refresh
 
     while (c != 0x1B) { /// ESC is 0x1B in ASCII
@@ -151,6 +154,7 @@ int main() {
                 red++;
                 i++;
             }
+
             line += 2;
             m += 1;
             move(line, 0);
@@ -165,8 +169,8 @@ int main() {
                 time(&end);
                 gap = end - start;
                 tasu = 60 * (typing / gap);
-                per = (float)typing - (float)red;
-                per /= (float)typing;
+                per = (float)tot - (float)red;
+                per /= (float)tot;
                 per *= 100;
 
                 // move(24, 1);
@@ -206,9 +210,10 @@ int main() {
             } else { /// if input is backspacebar
                 if (i == 0)
                     continue;
+                if (buffer[i] != words[m][i])
+                    red--;
                 i--;
                 typing--;
-                red--;
                 move(line, i);
                 addch(*" ");
                 move(line - 1, i);

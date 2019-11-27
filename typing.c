@@ -112,6 +112,7 @@ int typing() {
     int j = 0;
     int m = 0;
     char c;
+    int tot = 0;
     char buffer[100];
     int line = 1;
     time_t start = 0, end = 0;
@@ -132,7 +133,9 @@ int typing() {
     words = word(choice);
     for (j = 0; j < 100; j++)
         buffer[j] = '\0'; /// to clear array
-
+    for (j = 0; j < 10; j++) {
+        tot += strlen(words[j]);
+    }
     clear();
     refresh();
     printWriting(choice);
@@ -167,10 +170,9 @@ int typing() {
                 time(&end);
                 gap = end - start;
                 tasu = 60 * (typing / gap);
-                per = (float)typing - (float)red;
-                per /= (float)typing;
+                per = (float)tot - (float)red;
+                per /= (float)tot;
                 per *= 100;
-
                 // move(24, 1);
                 printw("time : %.1f sec\n", (float)gap);
                 printw("ta-su : %.1f\n", tasu);
@@ -208,9 +210,10 @@ int typing() {
             } else { /// if input is backspacebar
                 if (i == 0)
                     continue;
+                if (buffer[i] != words[m][i])
+                    red--;
                 i--;
                 typing--;
-                red--;
                 move(line, i);
                 addch(*" ");
                 move(line - 1, i);
