@@ -8,7 +8,6 @@
 // user input number to select the writing
 int choose() {
     int choice;
-    clear(); /// window clear
     printw("choose number\n");
     printw("1. Guliver's Travels\n");
     printw("2. Rapunzel\n");
@@ -107,7 +106,7 @@ void printWriting(int n) {
     free(words);
 }
 
-void typing() {
+int typing() {
     char **words;
     int i = 0;
     int j = 0;
@@ -121,27 +120,28 @@ void typing() {
     int choice;
     int red = 0;
     float per;
+    // read a number to select the writing
 
     initscr(); /// to use ncurses
+    clear();   /// window clear
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    refresh(); /// window refresh
 
-    // read a number to select the writing
     choice = choose();
     words = word(choice);
+    for (j = 0; j < 100; j++)
+        buffer[j] = '\0'; /// to clear array
+
+    clear();
+    refresh();
+    printWriting(choice);
+    time(&start);
+    move(1, 0);
+
+    refresh(); // window refresh
 
     while (c != 0x1B) { /// ESC is 0x1B in ASCII
-        clear();        /// window clear
-        start_color();
-        init_pair(1, COLOR_RED, COLOR_BLACK);
-        refresh(); /// window refresh
-
-        for (j = 0; j < 100; j++)
-            buffer[j] = '\0'; /// to clear array
-
-        printWriting(choice);
-        time(&start);
-        move(1, 0);
-
-        refresh(); // window refresh
         c = getchar();
         if (c == '\r') { // move to forward of line
             while (words[m][i] != NULL) {
