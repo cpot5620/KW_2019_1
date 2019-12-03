@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <time.h>
 void makeResource(void *none);
-void draw(int raw, int col, char *str);
+void bb_draw(int raw, int col, char *str);
 void sigHandler(int signum);
 int count = 1;
 int sleep_time = 3;
@@ -15,6 +15,14 @@ int score_user = 0;
 int indx = 0;
 
 bool gameover = false;
+
+void bb_draw(int row, int col, char *str) {
+    move(row, 0);
+    addstr("                    ");
+    move(row, col);
+    addstr(str);
+    refresh();
+}
 
 int stage = 1;
 pthread_t tid = 0;
@@ -28,65 +36,64 @@ char bb_data[][20] = {"culture",       "education",  "symbol",    "hawk",
 char bb_answer[][20] = {
     '\0',
 };
-// void draw(int row, int col, char *str) {
-//     move(row, 0);
-//     addstr("                    ");
-//     move(row, col);
-//     addstr(str);
-//     refresh();
-// }
 void makeResource(void *none) {
     srand(time(NULL));
     int random;
     char c;
     while (true) {
-        if (score_user == 10) {
+        if (score_user >= 10) {
             clear();
             attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
+            bb_draw(22, 20, "    -------------------------------");
+            bb_draw(23, 20, "   | Enter :                       |");
+            bb_draw(24, 20, "    -------------------------------");
             attroff(COLOR_PAIR(1));
             move(23, 32);
-            draw(1, 1,
-                 " _____                             _         _       _   _   "
-                 "            _ ");
-            draw(
+            bb_draw(
+                1, 1,
+                " _____                             _         _       _   _   "
+                "            _ ");
+            bb_draw(
                 2, 1,
                 "/  __ \\                           | |       | |     | | (_)  "
                 "           | |");
-            draw(3, 1,
-                 "| /  \\/ ___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_ _  "
-                 "___  _ __   | |");
-            draw(4, 1,
-                 "| |    / _ \\| '_ \\ / _` | '__/ _` | __| | | | |/ _` | __| "
-                 "|/ "
-                 "_ \\| '_ \\  | |");
-            draw(
+            bb_draw(
+                3, 1,
+                "| /  \\/ ___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_ _  "
+                "___  _ __   | |");
+            bb_draw(
+                4, 1,
+                "| |    / _ \\| '_ \\ / _` | '__/ _` | __| | | | |/ _` | __| "
+                "|/ "
+                "_ \\| '_ \\  | |");
+            bb_draw(
                 5, 1,
                 "| \\__/\\ (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | "
                 "(_) | | | | |_|");
-            draw(6, 1,
-                 " \\____/\\___/|_| |_|\\__, |_|  "
-                 "\\__,_|\\__|\\__,_|_|\\__,_|\\__|_|\\___/|_| |_| (_)");
-            draw(7, 1,
-                 "                    __/ |                                    "
-                 "              ");
-            draw(8, 1,
-                 "                   |___/                                     "
-                 "              ");
+            bb_draw(6, 1,
+                    " \\____/\\___/|_| |_|\\__, |_|  "
+                    "\\__,_|\\__|\\__,_|_|\\__,_|\\__|_|\\___/|_| |_| (_)");
+            bb_draw(
+                7, 1,
+                "                    __/ |                                    "
+                "              ");
+            bb_draw(
+                8, 1,
+                "                   |___/                                     "
+                "              ");
             if (stage == 3) {
-                draw(10, 25, "Game Finish !");
+                bb_draw(10, 25, "Game Finish !");
                 stage++;
+                sleep(3);
                 pthread_exit(0);
             }
-            draw(10, 22, "Please Wait... Moving to next stage...");
+            bb_draw(10, 22, "Please Wait... Moving to next stage...");
             sleep(3);
             clear();
             attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
+            bb_draw(22, 20, "    -------------------------------");
+            bb_draw(23, 20, "   | Enter :                       |");
+            bb_draw(24, 20, "    -------------------------------");
             attroff(COLOR_PAIR(1));
             move(23, 32);
             count = 0;
@@ -97,7 +104,7 @@ void makeResource(void *none) {
             refresh();
         }
         for (int i = 0; i <= 21; i++) {
-            draw(i, 32, "                            ");
+            bb_draw(i, 32, "                            ");
         }
         row = 20;
         random = rand() % 24;
@@ -106,26 +113,29 @@ void makeResource(void *none) {
         for (int i = 0; i < count; i++) {
             if (row < 0) {
                 clear();
-                draw(1, 9,
-                     " _____                        _____                      "
-                     "  ");
-                draw(
+                bb_draw(
+                    1, 9,
+                    " _____                        _____                      "
+                    "  ");
+                bb_draw(
                     2, 9,
                     "|  __ \\                      |  _  |                     "
                     "  ");
-                draw(
+                bb_draw(
                     3, 9,
                     "| |  \\/ __ _ _ __ ___   ___  | | | |_   _____ _ __       "
                     "  ");
-                draw(4, 9,
-                     "| | __ / _` | '_ ` _ \\ / _ \\ | | | \\ \\ / / _ \\ '__| "
-                     "     "
-                     "  ");
-                draw(5, 9,
-                     "| |_\\ \\ (_| | | | | | |  __/ \\ \\_/ /\\ V /  __/ |    "
-                     " _ _ "
-                     "_ ");
-                draw(
+                bb_draw(
+                    4, 9,
+                    "| | __ / _` | '_ ` _ \\ / _ \\ | | | \\ \\ / / _ \\ '__| "
+                    "     "
+                    "  ");
+                bb_draw(
+                    5, 9,
+                    "| |_\\ \\ (_| | | | | | |  __/ \\ \\_/ /\\ V /  __/ |    "
+                    " _ _ "
+                    "_ ");
+                bb_draw(
                     6, 9,
                     " \\____/\\__,_|_| |_| |_|\\___|  \\___/  \\_/ \\___|_|    "
                     "(_|_|_)");
@@ -134,13 +144,13 @@ void makeResource(void *none) {
             }
             if (bb_answer[i][0] == '\0')
                 continue;
-            draw(row - 1, 32, "----------------");
-            draw(row, 35, "                ");
+            bb_draw(row - 1, 32, "----------------");
+            bb_draw(row, 35, "                ");
             move(row, 35);
             for (int j = 0; bb_answer[i][j] != '\0'; j++) {
                 addch(bb_answer[i][j]);
             }
-            draw(row + 1, 32, "----------------");
+            bb_draw(row + 1, 32, "----------------");
             row -= 3;
         }
         indx++;
@@ -165,9 +175,9 @@ int bricks() {
     refresh(); /// window refresh
 
     attron(COLOR_PAIR(1));
-    draw(22, 20, "    -------------------------------");
-    draw(23, 20, "   | Enter :                       |");
-    draw(24, 20, "    -------------------------------");
+    bb_draw(22, 20, "    -------------------------------");
+    bb_draw(23, 20, "   | Enter :                       |");
+    bb_draw(24, 20, "    -------------------------------");
     move(23, j);
     attroff(COLOR_PAIR(1));
     refresh();
@@ -192,11 +202,12 @@ int bricks() {
                 for (int i = 0; i < 20; i++)
                     bb_answer[answer_index][i] = '\0';
                 int erase_row = abs(score_user - answer_index);
-                draw(20 - ((erase_row)*3 - 1), 32,
-                     "                            ");
-                draw(20 - ((erase_row)*3), 32, "                            ");
-                draw(20 - ((erase_row)*3 + 1), 32,
-                     "                            ");
+                bb_draw(20 - ((erase_row)*3 - 1), 32,
+                        "                            ");
+                bb_draw(20 - ((erase_row)*3), 32,
+                        "                            ");
+                bb_draw(20 - ((erase_row)*3 + 1), 32,
+                        "                            ");
                 score_user++;
             }
 
@@ -204,9 +215,9 @@ int bricks() {
                 buffer[j] = '\0'; /// to clear array
             }
             attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
+            bb_draw(22, 20, "    -------------------------------");
+            bb_draw(23, 20, "   | Enter :                       |");
+            bb_draw(24, 20, "    -------------------------------");
             move(23, j);
             attroff(COLOR_PAIR(1));
             refresh();
