@@ -18,7 +18,7 @@ int choose() {
 }
 // store txt file line by line to array
 char **alloArray(FILE *fp) {
-    int lines_allocated = 128;
+    int lines_allocated = 100;
     int max_line_len = 100;
 
     /* Allocate lines of text */
@@ -62,8 +62,6 @@ char **alloArray(FILE *fp) {
 }
 // open the selected txt file
 char **word(int n) {
-    int lines_allocated = 128;
-    int max_line_len = 100;
     char **words;
 
     if (n == 1) {
@@ -91,19 +89,16 @@ char **word(int n) {
     return words;
 }
 // print 10 lines
-void printWriting(int n) {
-    char **words = word(n);
+void printWriting(int n, char **words, int page) {
+    // if (page == 1)
+    //     return;
     int line = 0;
     // just print 10 lines
-    for (int j = 0; j < 10; ++j) {
+    for (int j = page * 10; j < page * 10 + 10; ++j) {
         move(line, 0);
         addstr(words[j]);
         line += 2;
     }
-    int i = 23;
-    for (; i >= 0; i--)
-        free(words[i]);
-    free(words);
 }
 
 int typing() {
@@ -121,6 +116,7 @@ int typing() {
     int choice;
     int red = 0;
     float per;
+    int page = 0;
     // read a number to select the writing
 
     initscr(); /// to use ncurses
@@ -138,7 +134,7 @@ int typing() {
     }
     clear();
     refresh();
-    printWriting(choice);
+    printWriting(choice, words, 0);
     time(&start);
     move(1, 0);
 
@@ -146,7 +142,43 @@ int typing() {
 
     while (c != 0x1B) { /// ESC is 0x1B in ASCII
         c = getchar();
-        if (c == '\r') { // move to forward of line
+        if (line == 19 && c == '\r') {
+            line = 1;
+            clear();
+            refresh();
+            // move(1, 0);
+            for (j = 0; j < 100; j++) {
+                buffer[j] = '\0'; /// buffer clear
+            }
+            ++page;
+            ++m;
+            printWriting(choice, words, page);
+            // refresh();
+            move(1, 0);
+
+            if (page == 4) {
+                clear();
+                refresh();
+                time(&end);
+                gap = end - start;
+                tasu = 60 * (typing / gap);
+                per = (float)tot - (float)red;
+                per /= (float)tot;
+                per *= 100;
+                // move(24, 1);
+                printw("time : %.1f sec\n", (float)gap);
+                printw("ta-su : %.1f\n", tasu);
+                printw("accuracy : %.1f %\n", per);
+
+                printw("if you want to quit, press key 'ESC'\n");
+                i = 100;
+                /* Good practice to free memory */
+                for (; i >= 0; i--)
+                    free(words[i]);
+                free(words);
+            }
+        } else if (c == '\r') { // move to forward of line
+
             while (words[m][i] != NULL) {
                 move(line - 1, i);
                 attron(COLOR_PAIR(1));
@@ -166,24 +198,12 @@ int typing() {
             for (j = 0; j < 100; j++) {
                 buffer[j] = '\0'; /// buffer clear
             }
-            if (line == 21) {
-                time(&end);
-                gap = end - start;
-                tasu = 60 * (typing / gap);
-                per = (float)tot - (float)red;
-                per /= (float)tot;
-                per *= 100;
-                // move(24, 1);
-                printw("time : %.1f sec\n", (float)gap);
-                printw("ta-su : %.1f\n", tasu);
-                printw("accuracy : %.1f %\n", per);
 
-                printw("if you want to quit, press key 'ESC'\n");
-            }
         } else {
             if (c != 127) {
                 if (words[m][i] == NULL) {
                     line += 2;
+
                     m += 1;
                     move(line, 0);
                     printf("\r");
@@ -224,10 +244,5 @@ int typing() {
         }
     }
 
-    i = 23;
-    /* Good practice to free memory */
-    for (; i >= 0; i--)
-        free(words[i]);
-    free(words);
     endwin();
 }

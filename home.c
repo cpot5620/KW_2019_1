@@ -37,6 +37,8 @@ int main(void) {
         c = getch();
         if (c == '1')
             typing();
+        else if (c == '3')
+            wordPractice();
     }
     endwin();
 }

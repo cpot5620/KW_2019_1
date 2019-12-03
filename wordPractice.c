@@ -31,7 +31,7 @@ void printWordsPractice() {
     printw("       \\/  \\/ \\___/|_|  \\__,_|___/   \\_|  |_|  "
            "\\__,_|\\___|\\__|_|\\___\\___|\n");
 }
-int main() {
+int wordPractice() {
     int index = 0;
     char buffer[20];
     char answer[20];
