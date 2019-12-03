@@ -31,14 +31,17 @@ int main(void) {
         printw("---------------------------------------------------------------"
                "----------\n");
 
-        printw("1. Practic writing\n");
-        printw("2. SansungBe game\n");
-        printw("3. Practice words\n");
+        printw("1. Practice words\n");
+        printw("2. Practice writing\n");
+        printw("3. Breaking bricks\n");
+        printw("4. Sansung bee\n");
         c = getch();
-        if (c == '1')
+        if (c == '2')
             typing();
-        else if (c == '3')
+        else if (c == '1')
             wordPractice();
+        else if (c == '3')
+            bricks();
     }
     endwin();
 }

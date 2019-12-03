@@ -4,7 +4,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-
+int lines_allocated = 100;
+int max_line_len = 100;
 // user input number to select the writing
 int choose() {
     int choice;
@@ -18,8 +19,6 @@ int choose() {
 }
 // store txt file line by line to array
 char **alloArray(FILE *fp) {
-    int lines_allocated = 100;
-    int max_line_len = 100;
 
     /* Allocate lines of text */
     char **words = (char **)malloc(sizeof(char *) * lines_allocated);
@@ -143,9 +142,9 @@ int typing() {
     while (c != 0x1B) { /// ESC is 0x1B in ASCII
         c = getchar();
         if (line == 19 && c == '\r') {
-            line = 1;
+
             clear();
-            refresh();
+
             // move(1, 0);
             for (j = 0; j < 100; j++) {
                 buffer[j] = '\0'; /// buffer clear
@@ -155,10 +154,12 @@ int typing() {
             printWriting(choice, words, page);
             // refresh();
             move(1, 0);
+            line = 1;
+            refresh();
 
             if (page == 4) {
                 clear();
-                refresh();
+
                 time(&end);
                 gap = end - start;
                 tasu = 60 * (typing / gap);
@@ -166,16 +167,14 @@ int typing() {
                 per /= (float)tot;
                 per *= 100;
                 // move(24, 1);
+                if (per < 0)
+                    per = 0;
                 printw("time : %.1f sec\n", (float)gap);
                 printw("ta-su : %.1f\n", tasu);
                 printw("accuracy : %.1f %\n", per);
-
                 printw("if you want to quit, press key 'ESC'\n");
-                i = 100;
-                /* Good practice to free memory */
-                for (; i >= 0; i--)
-                    free(words[i]);
-                free(words);
+                refresh();
+                // break;
             }
         } else if (c == '\r') { // move to forward of line
 
@@ -243,6 +242,10 @@ int typing() {
             }
         }
     }
-
+    i = lines_allocated;
+    /* Good practice to free memory */
+    for (; i >= 0; i--)
+        free(words[i]);
+    free(words);
     endwin();
 }
