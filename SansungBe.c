@@ -1,21 +1,33 @@
-/*
-#include <curses.h>
-#include <pthread.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <time.h>
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <curses.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 #include <pthread.h>
 #include <time.h>
+
+#define MAX 100
+
+typedef struct node {
+	char str[MAX]; // 출력 문자
+	int row, col; // 출력 행열
+	int mode; // 출력 모드
+	node *link;
+}node;
+
+void function(int signum);
+void reset();
+void thread_1(void *none);
+int itoa(int n, char *str);
+void findWord(char *str);
+node *makeNode();
+void makePlusOne();
+void addQueue(char *str, int col);
+char *returnWord();
+void draw(int row, int col, char *str);
+void startGame();
 
 int hp = 100;
 int string_location = 0;
@@ -23,7 +35,7 @@ int i;
 int length = 0;
 char hpText[3] = { 0 };
 node *ptr = 0;
-char enterText [20 = { 0 };
+char enterText[20] = { 0 };
 int enterHere = 0;
 int sleep_time = 1;
 
@@ -180,18 +192,18 @@ void addQueue(char *str, int col) {
 
 // selecting word in database
 char *returnWord() {
-  char *database[] = { "Apple", "Jung", "Cocaine", "Hello", "Elite", "Fail", "Game",
-                       "Halo", "Icon", "Jail", "knight", "Lake", "Monkey", "Nope"};
+  char database[15] = { "Apple", "Jung", "Cocaine", "Hello", "Elite", "Fail", "Game",
+                       "Halo", "Icon", "Jail", "knight", "Lake", "Monkey", "Nope" };
 
-  if (a == 13)
-    a = 0;
-  else a++;
+  if (string_location == 13)
+    string_location = 0;
+  else string_location++;
 
-  return database[a];
+  return database[string_location];
 }
 
 //
-oid draw(int row, int col, char *str) {
+void draw(int row, int col, char *str) {
   move(row, 0);
   addstr("                                                            ");
   move(row, col);
@@ -199,14 +211,14 @@ oid draw(int row, int col, char *str) {
   refresh();
 }
 
-oid startGame() {
+void startGame() {
   pthread_t t1;
 
   clear();
 
-  draw(16, 0, "   -------------------------------------------------------------");
-  draw(17, 0, "   | Enter :                                        | HP :     |");
-  draw(18, 0, "   -------------------------------------------------------------");
+  draw(16, 0, "   ---------------------------------------------------------");
+  draw(17, 0, "   | Enter :                                    | HP :     |");
+  draw(18, 0, "   ---------------------------------------------------------");
 
   itoa(hp, hpText);
   move(17, 55);
