@@ -171,7 +171,7 @@ void findWord(char *str) {
         if (!strcmp(temp->str, str)) {
             score += strlen(temp->str);
             strcpy(temp->str, "");
-            if (score > 50 ) {
+            if (score > 50 && psleep_time != 1) {
                 psleep_time = 1;
                 pthread_cancel(t1);
                 pthread_create(&t1, NULL, &thread_1, NULL);
