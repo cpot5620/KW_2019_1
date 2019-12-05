@@ -6,157 +6,190 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-void makeResource(void *none);
-void draw(int raw, int col, char *str);
-void sigHandler(int signum);
-int count = 1;
-int sleep_time = 3;
-int score_user = 0;
-int indx = 0;
+void printResource(void *none);
+void tt_draw(int raw, int col, char *str);
+void sIgHandler(int signum);
+int sleepTime = 3;
+int user_score = 0;
+int computer_score = 0;
 
-bool gameover = false;
+bool Gameover = false;
 
-int stage = 1;
-pthread_t tid = 0;
-int row = 20;
-char data[][20] = {"culture",       "education",  "symbol",    "hawk",
-                   "communication", "foundation", "glory",     "situation",
-                   "solution",      "population", "effort",    "competition",
-                   "lock",          "master",     "unity",     "nurse",
-                   "section",       "schedule",   "row",       "bowl",
-                   "giraffe",       "comfort",    "tradition", "effect"};
-char answer[][20] = {
-    '\0',
-};
-void draw(int row, int col, char *str) {
+void tt_draw(int row, int col, char *str) {
     move(row, 0);
     addstr("                    ");
     move(row, col);
     addstr(str);
     refresh();
 }
-void makeResource(void *none) {
-    srand(time(NULL));
-    int random;
-    char c;
-    while (true) {
-        if (score_user == 10) {
-            clear();
-            attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
-            attroff(COLOR_PAIR(1));
-            move(23, 32);
-            draw(1, 1,
-                 " _____                             _         _       _   _   "
-                 "            _ ");
-            draw(
-                2, 1,
-                "/  __ \\                           | |       | |     | | (_)  "
-                "           | |");
-            draw(3, 1,
-                 "| /  \\/ ___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_ _  "
-                 "___  _ __   | |");
-            draw(4, 1,
-                 "| |    / _ \\| '_ \\ / _` | '__/ _` | __| | | | |/ _` | __| "
-                 "|/ "
-                 "_ \\| '_ \\  | |");
-            draw(
-                5, 1,
-                "| \\__/\\ (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | "
-                "(_) | | | | |_|");
-            draw(6, 1,
-                 " \\____/\\___/|_| |_|\\__, |_|  "
-                 "\\__,_|\\__|\\__,_|_|\\__,_|\\__|_|\\___/|_| |_| (_)");
-            draw(7, 1,
-                 "                    __/ |                                    "
-                 "              ");
-            draw(8, 1,
-                 "                   |___/                                     "
-                 "              ");
-            if (stage == 3) {
-                draw(10, 25, "Game Finish !");
-                stage++;
-                pthread_exit(0);
-            }
-            draw(10, 22, "Please Wait... Moving to next stage...");
-            sleep(3);
-            clear();
-            attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
-            attroff(COLOR_PAIR(1));
-            move(23, 32);
-            count = 0;
-            indx = 0;
-            sleep_time--;
-            stage++;
-            score_user = 0;
-            refresh();
-        }
-        for (int i = 0; i <= 21; i++) {
-            draw(i, 32, "                            ");
-        }
-        row = 20;
-        random = rand() % 24;
-        for (int i = 0; data[random][i] != '\0'; i++)
-            answer[indx][i] = data[random][i];
-        for (int i = 0; i < count; i++) {
-            if (row < 0) {
-                clear();
-                draw(1, 9,
-                     " _____                        _____                      "
-                     "  ");
-                draw(
-                    2, 9,
-                    "|  __ \\                      |  _  |                     "
-                    "  ");
-                draw(
-                    3, 9,
-                    "| |  \\/ __ _ _ __ ___   ___  | | | |_   _____ _ __       "
-                    "  ");
-                draw(4, 9,
-                     "| | __ / _` | '_ ` _ \\ / _ \\ | | | \\ \\ / / _ \\ '__| "
-                     "     "
-                     "  ");
-                draw(5, 9,
-                     "| |_\\ \\ (_| | | | | | |  __/ \\ \\_/ /\\ V /  __/ |    "
-                     " _ _ "
-                     "_ ");
-                draw(
-                    6, 9,
-                    " \\____/\\__,_|_| |_| |_|\\___|  \\___/  \\_/ \\___|_|    "
-                    "(_|_|_)");
-                gameover = true;
-                pthread_exit(0);
-            }
-            if (answer[i][0] == '\0')
-                continue;
-            draw(row - 1, 32, "----------------");
-            draw(row, 35, "                ");
-            move(row, 35);
-            for (int j = 0; answer[i][j] != '\0'; j++) {
-                addch(answer[i][j]);
-            }
-            draw(row + 1, 32, "----------------");
-            row -= 3;
-        }
-        indx++;
-        count++;
-        sleep(sleep_time);
+
+int game_stage = 1;
+pthread_t tttid = 0;
+pthread_t ttid = 0;
+
+int Row = 20;
+char tt_data[35][20] = {
+    "apartment", "autumn",  "balloon",   "beautiful",  "build",      "calendar",
+    "cold",      "earth",   "exercise",  "farm",       "finger",     "gentle",
+    "ground",    "happy",   "juice",     "knife",      "lamp",       "morning",
+    "piano",     "problem", "question",  "restaurant", "service",    "silver",
+    "smile",     "table",   "telephone", "think",      "vacation",   "waste",
+    "year",      "zoo",     "friend",    "computer",   "competition"};
+char tt_answer[35][20] = {
+    '\0',
+};
+
+void copy(char answer[][20], char data[][20]) {
+    for (int i = 0; i < 35; ++i) {
+        strcpy(answer[i], data[i]);
     }
 }
 
-int main() {
+void printResource(void *none) {
+    char c;
+    while (true) {
+        if (computer_score + user_score == 11) {
+            clear();
+            attron(COLOR_PAIR(1));
+            tt_draw(22, 5, "    -------------------------------");
+            tt_draw(23, 5, "   | Enter :                       |");
+            tt_draw(24, 5, "    -------------------------------");
+            attroff(COLOR_PAIR(1));
+
+            refresh();
+            move(23, 18);
+            if (user_score > computer_score) {
+                mvprintw(4, 4, "__   __            _    _ _         _  ");
+                mvprintw(5, 4, "\\ \\ / /           | |  | (_)       | | ");
+                mvprintw(6, 4, " \\ V /___  _   _  | |  | |_ _ __   | | ");
+                mvprintw(7, 4, "  \\ // _ \\| | | | | |/\\| | | '_ \\  | | ");
+                mvprintw(8, 4, "  | | (_) | |_| | \\  /\\  / | | | | |_| ");
+                mvprintw(9, 4, "  \\_/\\___/ \\__,_|  \\/  \\/|_|_| |_| (_) ");
+
+                if (game_stage == 3) {
+                    mvprintw(4, 4,
+                             " _____                                           "
+                             "   _ ");
+                    mvprintw(5, 4,
+                             "|  __ \\                                         "
+                             "   | |");
+                    mvprintw(6, 4,
+                             "| |  \\/ __ _ _ __ ___   ___    _____   _____ _ "
+                             "__  | |");
+                    mvprintw(
+                        7, 4,
+                        "| | __ / _` | '_ ` _ \\ / _ \\  / _ \\ \\ / / _ \\ "
+                        "'__| | |");
+                    mvprintw(
+                        8, 4,
+                        "| |_\\ \\ (_| | | | | | |  __/ | (_) \\ V /  __/ |   "
+                        " |_|");
+                    mvprintw(9, 4,
+                             " \\____/\\__,_|_| |_| |_|\\___|  \\___/ \\_/ "
+                             "\\___|_|    (_)");
+                    game_stage++;
+                    sleep(3);
+                    pthread_exit(0);
+                }
+
+            } else {
+                mvprintw(
+                    4, 4,
+                    " _____                                              _ ");
+                mvprintw(
+                    5, 4,
+                    "|  __ \\                                            | |");
+                mvprintw(
+                    6, 4,
+                    "| |  \\/ __ _ _ __ ___   ___    _____   _____ _ __  | |");
+                mvprintw(7, 4,
+                         "| | __ / _` | '_ ` _ \\ / _ \\  / _ \\ \\ / / _ \\ "
+                         "'__| | |");
+                mvprintw(8, 4,
+                         "| |_\\ \\ (_| | | | | | |  __/ | (_) \\ V /  __/ |   "
+                         " |_|");
+                mvprintw(9, 4,
+                         " \\____/\\__,_|_| |_| |_|\\___|  \\___/ \\_/ "
+                         "\\___|_|    (_)");
+                sleep(3);
+                pthread_exit(0);
+            }
+            tt_draw(15, 12, "Please Wait... Moving to next stage...");
+
+            sleep(3);
+            clear();
+            attron(COLOR_PAIR(1));
+            tt_draw(22, 5, "    -------------------------------");
+            tt_draw(23, 5, "   | Enter :                       |");
+            tt_draw(24, 5, "    -------------------------------");
+            attroff(COLOR_PAIR(1));
+
+            move(23, 18);
+            sleepTime--;
+            game_stage++;
+            user_score = 0;
+            computer_score = 0;
+            mvprintw(20, 45, "-------------------------------");
+            mvprintw(21, 45, "    COMPUTER    |      ME      ");
+            mvprintw(22, 45, "-------------------------------");
+            mvprintw(23, 45, "       %d              %d      ", computer_score,
+                     user_score);
+            mvprintw(24, 45, "-------------------------------");
+
+            refresh();
+        }
+        Row = 2;
+        move(Row, 0);
+        for (int i = 0; i < 35; i++) {
+            printw("  %-13s", tt_answer[i]);
+            if ((i + 1) % 5 == 0) {
+                Row += 2;
+                move(Row, 0);
+            }
+        }
+        refresh();
+        usleep(50000);
+    }
+}
+
+void computer(void *none) {
+    int random;
+    srand((unsigned int)time(NULL));
+    sleep(sleepTime);
+    while (1) {
+        random = rand() % 35;
+        if (tt_answer[random][0] != '\0') {
+            for (int i = 0; i < 20; i++) {
+                tt_answer[random][i] = '\0';
+            }
+            computer_score++;
+            mvprintw(20, 45, "-------------------------------");
+            mvprintw(21, 45, "    COMPUTER    |      ME      ");
+            mvprintw(22, 45, "-------------------------------");
+            mvprintw(23, 45, "       %d              %d      ", computer_score,
+                     user_score);
+            mvprintw(24, 45, "-------------------------------");
+            refresh();
+        }
+        sleep(sleepTime);
+        if (computer_score + user_score == 35) {
+            copy(tt_answer, tt_data);
+            sleep(sleepTime);
+            if (game_stage == 3) {
+                pthread_exit(0);
+            }
+        }
+    }
+}
+
+int resourceTake() {
     char buffer[20] = {'\0'};
-    int j = 32;
+    int j = 18;
     bool tf;
     char c;
     int i = 0;
     int answer_index;
-    signal(SIGINT, sigHandler);
+    signal(SIGINT, sIgHandler);
     initscr(); /// to use ncurses
     clear();   /// window clear
     curs_set(0);
@@ -165,54 +198,64 @@ int main() {
     refresh(); /// window refresh
 
     attron(COLOR_PAIR(1));
-    draw(22, 20, "    -------------------------------");
-    draw(23, 20, "   | Enter :                       |");
-    draw(24, 20, "    -------------------------------");
+    tt_draw(22, 5, "    -------------------------------");
+    tt_draw(23, 5, "   | Enter :                       |");
+    tt_draw(24, 5, "    -------------------------------");
+
     move(23, j);
     attroff(COLOR_PAIR(1));
+    mvprintw(20, 45, "-------------------------------");
+    mvprintw(21, 45, "    COMPUTER    |      ME      ");
+    mvprintw(22, 45, "-------------------------------");
+    mvprintw(23, 45, "       %d              %d      ", computer_score,
+             user_score);
+    mvprintw(24, 45, "-------------------------------");
     refresh();
-    pthread_create(&tid, NULL, makeResource, NULL);
+    copy(tt_answer, tt_data);
+    pthread_create(&tttid, NULL, printResource, NULL);
+    pthread_create(&ttid, NULL, computer, NULL);
     while (c != 0x1B) {
         c = getchar();
-        if (stage == 4 || gameover) {
+        if (game_stage == 4 || Gameover) {
             sleep(3);
             break;
         }
         if (c == '\r') { // move to forward of line
             tf = false;
-            j = 32;
-            for (int k = 0; k < indx; k++) {
-                if (strcmp(buffer, answer[k]) == 0) {
+            j = 18;
+            for (int k = 0; k < 35; k++) {
+                if (strcmp(buffer, tt_answer[k]) == 0 && buffer[0] != '\0') {
                     tf = true;
                     answer_index = k;
                     break;
                 }
             }
-            if (tf) {
+            if (tf) { /// erase word
                 for (int i = 0; i < 20; i++)
-                    answer[answer_index][i] = '\0';
-                int erase_row = abs(score_user - answer_index);
-                draw(20 - ((erase_row)*3 - 1), 32,
-                     "                            ");
-                draw(20 - ((erase_row)*3), 32, "                            ");
-                draw(20 - ((erase_row)*3 + 1), 32,
-                     "                            ");
-                score_user++;
+                    tt_answer[answer_index][i] = '\0';
+                user_score++;
             }
 
             for (int j = 0; j < 20; j++) {
                 buffer[j] = '\0'; /// to clear array
             }
             attron(COLOR_PAIR(1));
-            draw(22, 20, "    -------------------------------");
-            draw(23, 20, "   | Enter :                       |");
-            draw(24, 20, "    -------------------------------");
+            tt_draw(22, 5, "    -------------------------------");
+            tt_draw(23, 5, "   | Enter :                       |");
+            tt_draw(24, 5, "    -------------------------------");
+
             move(23, j);
             attroff(COLOR_PAIR(1));
+            mvprintw(20, 45, "-------------------------------");
+            mvprintw(21, 45, "    COMPUTER    |      ME      ");
+            mvprintw(22, 45, "-------------------------------");
+            mvprintw(23, 45, "       %d              %d      ", computer_score,
+                     user_score);
+            mvprintw(24, 45, "-------------------------------");
             refresh();
             i = 0;
         } else if (c != 127) {
-            if (j == 52)
+            if (j == 38)
                 continue;
             buffer[i] = c;
             j++;
@@ -221,7 +264,7 @@ int main() {
             addch(c);
             refresh();
         } else { /// if input is backspacebar
-            if (j == 32)
+            if (j == 18)
                 continue;
             move(23, j);
             addch(*" ");
@@ -231,15 +274,17 @@ int main() {
             refresh();
         }
     }
-    pthread_join(&tid, NULL);
+    pthread_cancel(&tttid);
+    pthread_cancel(&ttid);
     endwin();
 
     return 0;
 }
 
-void sigHandler(int signum) {
+void sIgHandler(int signum) {
     if (signum == SIGINT) {
-        pthread_cancel(&tid);
+        pthread_cancel(&tttid);
+        pthread_cancel(&ttid);
         curs_set(1);
         clear();
         endwin();

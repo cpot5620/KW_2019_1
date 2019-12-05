@@ -65,6 +65,10 @@ int main(void) {
         draw(22, 20, "    -------------------------------");
         draw(23, 20, "   |       4. Acid Rain Game       |");
         draw(24, 20, "    -------------------------------");
+        draw(22, 20, "    -------------------------------");
+        draw(23, 20, "   |       5. Take Resource        |");
+        draw(24, 20, "    -------------------------------");
+
         attroff(COLOR_PAIR(2));
         refresh();
         c = getch();
@@ -76,6 +80,8 @@ int main(void) {
             bricks();
         else if (c == '4')
             startGame();
+        else if (c == '5')
+            resourceTake();
     }
     curs_set(1);
     endwin();
