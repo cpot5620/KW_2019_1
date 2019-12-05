@@ -85,7 +85,7 @@ void makeResource(void *none) {
                 bb_draw(10, 33, "Game Finish !");
                 sleep(3);
                 for (int k = 0; k < indx; k++)
-                    memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
+                    memset(bb_answer[k], '\0', 20);
                 stage++;
                 pthread_exit(0);
             }
@@ -99,7 +99,7 @@ void makeResource(void *none) {
             attroff(COLOR_PAIR(1));
             move(23, 32);
             for (int k = 0; k < indx; k++)
-                memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
+                memset(bb_answer[k], '\0', 20);
             count = 0;
             indx = 0;
             sleep_time -= 800000;
@@ -183,7 +183,7 @@ int bricks() {
     indx = 0;
     c = 0;
     for (int k = 0; k < 25; k++)
-        memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
+        memset(bb_answer[k], '\0', 20);
     attron(COLOR_PAIR(1));
     bb_draw(22, 20, "    -------------------------------");
     bb_draw(23, 20, "   | Enter :                       |");
@@ -209,8 +209,7 @@ int bricks() {
                 }
             }
             if (tf) {
-                memset(bb_answer[answer_index], '\0',
-                       sizeof(bb_answer[answer_index]));
+                memset(bb_answer[answer_index], '\0', 20);
                 int erase_row = abs(score_user - answer_index);
                 bb_draw(20 - ((erase_row)*3 - 1), 32,
                         "                            ");
