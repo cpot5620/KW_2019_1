@@ -42,6 +42,8 @@ int main(void) {
             wordPractice();
         else if (c == '3')
             bricks();
+        else if (c == '4')
+            startGame();
     }
     endwin();
 }
