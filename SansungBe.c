@@ -261,11 +261,11 @@ void findWord(char *str) {
                 move(17, 12);
                 int a;
                 while (a != 0x1B) {
-                  a = getch();
-                  refresh();
-                  endwin();
-                  c = 0x1B;
-                  break;
+                    a = getch();
+                    refresh();
+                    endwin();
+                    c = 0x1B;
+                    break;
                 }
             }
             return;
@@ -313,105 +313,103 @@ void sdraw(int row, int col, const char *str) {
 }
 
 void startGame() {
-  initscr(); /// to use ncurses
-  clear();   /// window clear
-  start_color();
-  init_pair(1, COLOR_RED, COLOR_BLACK);
-  refresh(); /// window refresh
-  clear();
-
-  sdraw(0, 0,
-        "   ----------------------------------------------------------");
-  sdraw(16, 0,
-        "   ----------------------------------------------------------");
-  sdraw(17, 0,
-        "   | Enter :                     | Score :      | HP :      |");
-  sdraw(18, 0,
-        "   ----------------------------------------------------------");
-  itoa(score, scoreText);
-  move(17, 43);
-  addstr("      ");
-  move(17, 43);
-  addstr(scoreText);
-
-  itoa(hp, hpText);
-  move(17, 55);
-  addstr("     ");
-  move(17, 55);
-  addstr(hpText);
-
-  pthread_create(&t1, NULL, &thread_1, NULL);
-
-  while (hp > 0) {
-    if (c == 0x1B) {
-      pthread_cancel(t1);
-      refresh();
-      endwin();
-      break;
-    }
-    for (enterHere = 0; enterHere < 20 && c != 0x1B;) {
-      c = getchar();
-
-      if (c == '\r') {
-        enterText[enterHere] = '\0';
-        findWord(enterText);
-
-        for(i = 0; i < 20; i++) {
-          enterText[i] = '\0';
-        }
-
-        sdraw(17, 0,
-              "   | Enter :                     | Score :      | HP :   "
-              "   |");
-        itoa(score, scoreText);
-        move(17, 43);
-        addstr("      ");
-        move(17, 43);
-        addstr(scoreText);
-        itoa(hp, hpText);
-        move(17, 55);
-        addstr("     ");
-        move(17, 55);
-        addstr(hpText);
-        move(17, 12);
-
-        break;
-      }
-      else if (c == 127) {
-        if (enterHere > 0) {
-          enterText[--enterHere] = '\0';
-          move(17, 12);
-          addstr("                     ");
-          move(17, 12);
-          addstr(enterText);
-        }
-        else {
-          move(17, 12);
-          addstr("                   ");
-        }
-      }
-      else {
-        if (enterHere < 19) {
-          enterText[enterHere++] = c;
-          move(17, 12);
-          addstr(enterText);
-        }
-      }
-      refresh();
-    }
-  }
-
-  pthread_join(t1, NULL);
-
-  reset();
-  clear();
-}
-
-int main(int args, const char *argv[]) {
     initscr(); /// to use ncurses
     clear();   /// window clear
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
-    startGame();
+    clear();
+
+    sdraw(0, 0,
+          "   ----------------------------------------------------------");
+    sdraw(16, 0,
+          "   ----------------------------------------------------------");
+    sdraw(17, 0,
+          "   | Enter :                     | Score :      | HP :      |");
+    sdraw(18, 0,
+          "   ----------------------------------------------------------");
+    itoa(score, scoreText);
+    move(17, 43);
+    addstr("      ");
+    move(17, 43);
+    addstr(scoreText);
+
+    itoa(hp, hpText);
+    move(17, 55);
+    addstr("     ");
+    move(17, 55);
+    addstr(hpText);
+
+    pthread_create(&t1, NULL, &thread_1, NULL);
+
+    while (hp > 0) {
+        if (c == 0x1B) {
+            pthread_cancel(t1);
+            refresh();
+            endwin();
+            break;
+        }
+        for (enterHere = 0; enterHere < 20 && c != 0x1B;) {
+            c = getchar();
+
+            if (c == '\r') {
+                enterText[enterHere] = '\0';
+                findWord(enterText);
+
+                for (i = 0; i < 20; i++) {
+                    enterText[i] = '\0';
+                }
+
+                sdraw(
+                    17, 0,
+                    "   | Enter :                     | Score :      | HP :   "
+                    "   |");
+                itoa(score, scoreText);
+                move(17, 43);
+                addstr("      ");
+                move(17, 43);
+                addstr(scoreText);
+                itoa(hp, hpText);
+                move(17, 55);
+                addstr("     ");
+                move(17, 55);
+                addstr(hpText);
+                move(17, 12);
+
+                break;
+            } else if (c == 127) {
+                if (enterHere > 0) {
+                    enterText[--enterHere] = '\0';
+                    move(17, 12);
+                    addstr("                     ");
+                    move(17, 12);
+                    addstr(enterText);
+                } else {
+                    move(17, 12);
+                    addstr("                   ");
+                }
+            } else {
+                if (enterHere < 19) {
+                    enterText[enterHere++] = c;
+                    move(17, 12);
+                    addstr(enterText);
+                }
+            }
+            refresh();
+        }
+    }
+
+    pthread_join(t1, NULL);
+
+    reset();
+    clear();
 }
+
+// int main(int args, const char *argv[]) {
+//     initscr(); /// to use ncurses
+//     clear();   /// window clear
+//     start_color();
+//     init_pair(1, COLOR_RED, COLOR_BLACK);
+//     refresh(); /// window refresh
+//     startGame();
+// }
