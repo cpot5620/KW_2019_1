@@ -10,7 +10,7 @@ void makeResource(void *none);
 void bb_draw(int raw, int col, char *str);
 void sigHandler(int signum);
 int count = 1;
-int sleep_time = 3;
+int sleep_time = 3000000;
 int score_user = 0;
 int indx = 0;
 char c;
@@ -83,10 +83,11 @@ void makeResource(void *none) {
                 8, 1,
                 "                   |___/                                     "
                 "              ");
-            if (stage == 3) {
+            if (stage == 4) {
                 bb_draw(10, 33, "Game Finish !");
                 sleep(3);
                 pthread_exit(0);
+                stage++;
             }
             bb_draw(10, 22, "Please Wait... Moving to next stage...");
             sleep(3);
@@ -97,10 +98,11 @@ void makeResource(void *none) {
             bb_draw(24, 20, "    -------------------------------");
             attroff(COLOR_PAIR(1));
             move(23, 32);
-            memset(bb_answer, '\0', sizeof(bb_answer));
+            for (int k = 0; k < count; k++)
+                memset(bb_answer[k], '\0', sizeof(bb_answer));
             count = 0;
             indx = 0;
-            sleep_time--;
+            sleep_time -= 800000;
             stage++;
             score_user = 0;
             refresh();
@@ -157,7 +159,7 @@ void makeResource(void *none) {
         }
         indx++;
         count++;
-        sleep(sleep_time);
+        usleep(sleep_time);
     }
 }
 
@@ -175,8 +177,8 @@ int bricks() {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
     gameover = false;
-    stage = 0;
-    sleep_time = 3;
+    stage = 1;
+    sleep_time = 3000000;
     count = 1;
     indx = 0;
     c = 0;
@@ -190,7 +192,7 @@ int bricks() {
     pthread_create(&tid, NULL, makeResource, NULL);
     while (c != 0x1B) {
         c = getchar();
-        if (stage == 4 || gameover) {
+        if (stage == 5 || gameover) {
             sleep(3);
             break;
         }
@@ -205,8 +207,8 @@ int bricks() {
                 }
             }
             if (tf) {
-                for (int i = 0; i < 20; i++)
-                    bb_answer[answer_index][i] = '\0';
+                memset(bb_answer[answer_index], '\0',
+                       sizeof(bb_answer[answer_index]));
                 int erase_row = abs(score_user - answer_index);
                 bb_draw(20 - ((erase_row)*3 - 1), 32,
                         "                            ");
