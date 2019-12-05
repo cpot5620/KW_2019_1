@@ -9,24 +9,25 @@
 #include <time.h>
 
 #define MAX 100
+const char *database[15] = { "Apple", "Jung", "Cocaine", "Hello", "Elite", "Fail", "Game", "Halo", "Icon", "Jail", "knight", "Lake", "Monkey", "Nope" };
 
 typedef struct node {
 	char str[MAX]; // 출력 문자
 	int row, col; // 출력 행열
 	int mode; // 출력 모드
-	node *link;
+  struct node *link;
 }node;
 
 void function(int signum);
 void reset();
-void thread_1(void *none);
+void* thread_1(void *none);
 int itoa(int n, char *str);
 void findWord(char *str);
 node *makeNode();
 void makePlusOne();
-void addQueue(char *str, int col);
-char *returnWord();
-void draw(int row, int col, char *str);
+void addQueue(const char *str, int col);
+const char *returnWord();
+void draw(int row, int col, const char *str);
 void startGame();
 
 int hp = 100;
@@ -75,8 +76,54 @@ void reset() {
   }
 }
 
+// Put in queue
+void addQueue(const char *str, int col) {
+  node *temp = 0;
+  node *temp2 = 0;
+
+  if (ptr == 0) {
+    ptr = makeNode();
+    strcpy(ptr->str, str);
+    ptr->row = 1;
+    ptr->col = col;
+  }
+  else {
+    temp = makeNode();
+    strcpy(temp->str, str);
+    temp->row = 1;
+    temp->col = col;
+    temp->link = ptr;
+    ptr = temp;
+    makePlusOne();
+  }
+
+  length++;
+
+  if (length > 15) {
+    while (temp->link) {
+      temp2 = temp;
+      temp = temp->link;
+    }
+
+    hp -= strlen(temp->str);
+
+    hpText[2] = '\0';
+
+    itoa(hp, hpText);
+    move(17, 55);
+    addstr("    ");
+    move(17, 55);
+    addstr(hpText);
+
+    free(temp);
+    temp2->link = 0;
+
+    length--;
+  }
+}
+
 // Show word on screen
-void thread_1(void *none) {
+void* thread_1(void *none) {
   int t = sleep_time;
 
   while (hp > 0) {
@@ -144,56 +191,8 @@ void makePlusOne() {
   }
 }
 
-// Put in queue
-void addQueue(char *str, int col) {
-  node *temp = 0;
-  node *temp2 = 0;
-
-  if (ptr == 0) {
-    ptr = makeNode();
-    strcpy(ptr->str, str);
-    ptr->row = 1;
-    ptr->col = col;
-  }
-  else {
-    temp = makeNode();
-    strcpy(temp->str, str);
-    temp->row = 1;
-    temp->col = col;
-    temp->link = ptr;
-    ptr = temp;
-    makePlusOne();
-  }
-
-  length++;
-
-  if (length > 15) {
-    while (temp->link) {
-      temp2 = temp;
-      temp = temp->link;
-    }
-
-    hp -= strlen(temp->str);
-
-    hpText[2] = '\0';
-
-    itoa(hp, hpText);
-    move(17, 55);
-    addstr("    ");
-    move(17, 55);
-    addstr(hpText);
-
-    free(temp);
-    temp2->link = 0;
-
-    length--;
-  }
-}
-
 // selecting word in database
-char *returnWord() {
-  char database[15] = { "Apple", "Jung", "Cocaine", "Hello", "Elite", "Fail", "Game",
-                       "Halo", "Icon", "Jail", "knight", "Lake", "Monkey", "Nope" };
+const char *returnWord() {
 
   if (string_location == 13)
     string_location = 0;
@@ -203,7 +202,7 @@ char *returnWord() {
 }
 
 //
-void draw(int row, int col, char *str) {
+void draw(int row, int col,const char *str) {
   move(row, 0);
   addstr("                                                            ");
   move(row, col);
@@ -213,6 +212,8 @@ void draw(int row, int col, char *str) {
 
 void startGame() {
   pthread_t t1;
+	int test = 5;
+	int *testtest;
 
   clear();
 
@@ -226,7 +227,7 @@ void startGame() {
   move(17, 55);
   addstr(hpText);
 
-  pthread_create(&t1, NULL, thread_1, NULL);
+  pthread_create(&t1, NULL, &thread_1, NULL);
 
   while (hp > 0) {
     for (enterHere = 0; enterHere < 20;) {
@@ -240,7 +241,7 @@ void startGame() {
           enterText[i] = '\0';
         }
 
-        draw(17, 0, "   | Enter :                                        | HP :     |");
+        draw(17, 0, "   | Enter :                                    | HP :     |");
         move(17, 12);
 
         break;
@@ -267,8 +268,17 @@ void startGame() {
       refresh();
     }
   }
-  pthread_join(&t1, NULL);
+  pthread_join(t1, NULL);
 
   reset();
   clear();
+}
+
+int main(int args, const char *argv[]) {
+  initscr(); /// to use ncurses
+  clear();   /// window clear
+  start_color();
+  init_pair(1, COLOR_RED, COLOR_BLACK);
+  refresh(); /// window refresh
+	startGame();
 }
