@@ -178,58 +178,75 @@ void findWord(char *str) {
             }
             if (score > 100) {
                 pthread_cancel(t1);
-                sdraw(1, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(2, 0,
-                     "                    clear                                "
-                     "    ");
-                sdraw(3, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(4, 0,
-                     "                           clear                         "
-                     "    ");
-                sdraw(5, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(6, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(7, 0,
-                     "           clear                                         "
-                     "    ");
-                sdraw(8, 0,
-                     "                                          clear          "
-                     "    ");
-                sdraw(9, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(10, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(11, 0,
-                     "                      clear               clear          "
-                     "    ");
-                sdraw(12, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(13, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(14, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(15, 0,
-                     "                                                         "
-                     "    ");
-                sdraw(16, 0,
-                     "   "
-                     "---------------------------------------------------------"
-                     "-");
-                sdraw(17, 0,
-                     "   | Enter :                     | Score :      | HP :   "
-                     "   |");
+                sdraw(
+                    1, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    2, 0,
+                    "                    clear                                "
+                    "    ");
+                sdraw(
+                    3, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    4, 0,
+                    "                           clear                         "
+                    "    ");
+                sdraw(
+                    5, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    6, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    7, 0,
+                    "           clear                                         "
+                    "    ");
+                sdraw(
+                    8, 0,
+                    "                                          clear          "
+                    "    ");
+                sdraw(
+                    9, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    10, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    11, 0,
+                    "                      clear               clear          "
+                    "    ");
+                sdraw(
+                    12, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    13, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    14, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    15, 0,
+                    "                                                         "
+                    "    ");
+                sdraw(
+                    16, 0,
+                    "   "
+                    "---------------------------------------------------------"
+                    "-");
+                sdraw(
+                    17, 0,
+                    "   | Enter :                     | Score :      | HP :   "
+                    "   |");
                 itoa(score, scoreText);
                 move(17, 43);
                 addstr("      ");
@@ -293,14 +310,15 @@ void startGame() {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
     clear();
-    sdraw(0, 0, "   ----------------------------------------------------------");
+    sdraw(0, 0,
+          "   ----------------------------------------------------------");
     sdraw(16, 0,
-         "   ----------------------------------------------------------");
+          "   ----------------------------------------------------------");
     sdraw(17, 0,
-         "   | Enter :                     | Score :      | HP :      |");
+          "   | Enter :                     | Score :      | HP :      |");
     sdraw(18, 0,
-         "   ----------------------------------------------------------");
-
+          "   ----------------------------------------------------------");
+    curs_set(0);
     itoa(score, scoreText);
     move(17, 43);
     addstr("      ");
@@ -315,7 +333,7 @@ void startGame() {
     pthread_create(&t1, NULL, &thread_1, NULL);
 
     while (hp > 0) {
-        for (enterHere = 0; enterHere < 20;) {
+        for (enterHere = 0; enterHere < 10;) {
             int c = getch();
 
             if (c == '\n') {
@@ -326,9 +344,10 @@ void startGame() {
                     enterText[i] = '\0';
                 }
 
-                sdraw(17, 0,
-                     "   | Enter :                     | Score :      | HP :   "
-                     "   |");
+                sdraw(
+                    17, 0,
+                    "   | Enter :                     | Score :      | HP :   "
+                    "   |");
                 itoa(score, scoreText);
                 move(17, 43);
                 addstr("      ");

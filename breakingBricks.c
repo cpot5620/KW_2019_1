@@ -13,7 +13,7 @@ int count = 1;
 int sleep_time = 3;
 int score_user = 0;
 int indx = 0;
-
+char c;
 bool gameover = false;
 
 void bb_draw(int row, int col, char *str) {
@@ -39,8 +39,10 @@ char bb_answer[][20] = {
 void makeResource(void *none) {
     srand(time(NULL));
     int random;
-    char c;
     while (true) {
+        if (c == 0x1B) {
+            pthread_exit(0);
+        }
         if (score_user >= 10) {
             clear();
             attron(COLOR_PAIR(1));
@@ -82,7 +84,7 @@ void makeResource(void *none) {
                 "                   |___/                                     "
                 "              ");
             if (stage == 3) {
-                bb_draw(10, 25, "Game Finish !");
+                bb_draw(10, 33, "Game Finish !");
                 stage++;
                 sleep(3);
                 pthread_exit(0);
@@ -141,6 +143,7 @@ void makeResource(void *none) {
                     "(_|_|_)");
                 gameover = true;
                 pthread_exit(0);
+                return;
             }
             if (bb_answer[i][0] == '\0')
                 continue;
@@ -163,7 +166,6 @@ int bricks() {
     char buffer[20] = {'\0'};
     int j = 32;
     bool tf;
-    char c;
     int i = 0;
     int answer_index;
     signal(SIGINT, sigHandler);
@@ -242,7 +244,13 @@ int bricks() {
             refresh();
         }
     }
-    pthread_join(&tid, NULL);
+    if (c == 0x1B) {
+        pthread_cancel(tid);
+    } else {
+        pthread_join(&tid, NULL);
+    }
+    curs_set(1);
+    clear();
     endwin();
 
     return 0;
