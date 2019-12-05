@@ -12,7 +12,8 @@ void sIgHandler(int signum);
 int sleepTime = 3;
 int user_score = 0;
 int computer_score = 0;
-
+int *status;
+char input;
 bool Gameover = false;
 
 void tt_draw(int row, int col, char *str) {
@@ -46,9 +47,10 @@ void copy(char answer[][20], char data[][20]) {
 }
 
 void printResource(void *none) {
-    char c;
     while (true) {
-        if (computer_score + user_score == 11) {
+        if (input == 0x1B)
+            pthread_exit(0);
+        if (computer_score + user_score == 35) {
             clear();
             attron(COLOR_PAIR(1));
             tt_draw(22, 5, "    -------------------------------");
@@ -129,13 +131,14 @@ void printResource(void *none) {
             game_stage++;
             user_score = 0;
             computer_score = 0;
+            attron(COLOR_PAIR(2));
             mvprintw(20, 45, "-------------------------------");
             mvprintw(21, 45, "    COMPUTER    |      ME      ");
             mvprintw(22, 45, "-------------------------------");
             mvprintw(23, 45, "       %d              %d      ", computer_score,
                      user_score);
             mvprintw(24, 45, "-------------------------------");
-
+            attroff(COLOR_PAIR(2));
             refresh();
         }
         Row = 2;
@@ -157,18 +160,22 @@ void computer(void *none) {
     srand((unsigned int)time(NULL));
     sleep(sleepTime);
     while (1) {
+        if (input == 0x1B)
+            pthread_exit(0);
         random = rand() % 35;
         if (tt_answer[random][0] != '\0') {
             for (int i = 0; i < 20; i++) {
                 tt_answer[random][i] = '\0';
             }
             computer_score++;
+            attron(COLOR_PAIR(2));
             mvprintw(20, 45, "-------------------------------");
             mvprintw(21, 45, "    COMPUTER    |      ME      ");
             mvprintw(22, 45, "-------------------------------");
             mvprintw(23, 45, "       %d              %d      ", computer_score,
                      user_score);
             mvprintw(24, 45, "-------------------------------");
+            attroff(COLOR_PAIR(2));
             refresh();
         }
         sleep(sleepTime);
@@ -186,7 +193,6 @@ int resourceTake() {
     char buffer[20] = {'\0'};
     int j = 18;
     bool tf;
-    char c;
     int i = 0;
     int answer_index;
     signal(SIGINT, sIgHandler);
@@ -204,23 +210,26 @@ int resourceTake() {
 
     move(23, j);
     attroff(COLOR_PAIR(1));
+
+    attron(COLOR_PAIR(2));
     mvprintw(20, 45, "-------------------------------");
     mvprintw(21, 45, "    COMPUTER    |      ME      ");
     mvprintw(22, 45, "-------------------------------");
     mvprintw(23, 45, "       %d              %d      ", computer_score,
              user_score);
     mvprintw(24, 45, "-------------------------------");
+    attroff(COLOR_PAIR(2));
     refresh();
     copy(tt_answer, tt_data);
     pthread_create(&tttid, NULL, printResource, NULL);
     pthread_create(&ttid, NULL, computer, NULL);
-    while (c != 0x1B) {
-        c = getchar();
+    while (input != 0x1B) {
+        input = getchar();
         if (game_stage == 4 || Gameover) {
             sleep(3);
             break;
         }
-        if (c == '\r') { // move to forward of line
+        if (input == '\r') { // move to forward of line
             tf = false;
             j = 18;
             for (int k = 0; k < 35; k++) {
@@ -246,22 +255,24 @@ int resourceTake() {
 
             move(23, j);
             attroff(COLOR_PAIR(1));
+            attron(COLOR_PAIR(2));
             mvprintw(20, 45, "-------------------------------");
             mvprintw(21, 45, "    COMPUTER    |      ME      ");
             mvprintw(22, 45, "-------------------------------");
             mvprintw(23, 45, "       %d              %d      ", computer_score,
                      user_score);
             mvprintw(24, 45, "-------------------------------");
+            attroff(COLOR_PAIR(1));
             refresh();
             i = 0;
-        } else if (c != 127) {
+        } else if (input != 127) {
             if (j == 38)
                 continue;
-            buffer[i] = c;
+            buffer[i] = input;
             j++;
             i++;
             move(23, j);
-            addch(c);
+            addch(input);
             refresh();
         } else { /// if input is backspacebar
             if (j == 18)
@@ -276,6 +287,10 @@ int resourceTake() {
     }
     pthread_cancel(&tttid);
     pthread_cancel(&ttid);
+    // pthread_join(ttid, (void **)&status);
+    // pthread_join(tttid, (void **)&status);
+    curs_set(1);
+    clear();
     endwin();
 
     return 0;
