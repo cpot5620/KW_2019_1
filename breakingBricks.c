@@ -33,9 +33,7 @@ char bb_data[][20] = {"culture",       "education",  "symbol",    "hawk",
                       "lock",          "master",     "unity",     "nurse",
                       "section",       "schedule",   "row",       "bowl",
                       "giraffe",       "comfort",    "tradition", "effect"};
-char bb_answer[][20] = {
-    '\0',
-};
+char bb_answer[][20];
 void makeResource(void *none) {
     srand(time(NULL));
     int random;
@@ -86,8 +84,10 @@ void makeResource(void *none) {
             if (stage == 4) {
                 bb_draw(10, 33, "Game Finish !");
                 sleep(3);
-                pthread_exit(0);
+                for (int k = 0; k < indx; k++)
+                    memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
                 stage++;
+                pthread_exit(0);
             }
             bb_draw(10, 22, "Please Wait... Moving to next stage...");
             sleep(3);
@@ -98,8 +98,8 @@ void makeResource(void *none) {
             bb_draw(24, 20, "    -------------------------------");
             attroff(COLOR_PAIR(1));
             move(23, 32);
-            for (int k = 0; k < count; k++)
-                memset(bb_answer[k], '\0', sizeof(bb_answer));
+            for (int k = 0; k < indx; k++)
+                memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
             count = 0;
             indx = 0;
             sleep_time -= 800000;
@@ -182,6 +182,8 @@ int bricks() {
     count = 1;
     indx = 0;
     c = 0;
+    for (int k = 0; k < 25; k++)
+        memset(bb_answer[k], '\0', sizeof(bb_answer[k]));
     attron(COLOR_PAIR(1));
     bb_draw(22, 20, "    -------------------------------");
     bb_draw(23, 20, "   | Enter :                       |");

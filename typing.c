@@ -9,12 +9,41 @@ int max_line_len = 100;
 // user input number to select the writing
 int choose() {
     int choice;
-    printw("choose number\n");
-    printw("1. Guliver's Travels\n");
-    printw("2. Rapunzel\n");
-    printw("Your choice: ");
+    attron(COLOR_PAIR(4));
+    printw("\n");
+    printw(
+        "  _____ _                            _   _                 _        "
+        "         _ \n");
+    printw(
+        " /  __ \\ |                          | \\ | |               | |       "
+        "        | |\n");
+    printw(
+        " | /  \\/ |__   ___   ___  ___  ___  |  \\| |_   _ _ __ ___ | |__   "
+        "___ _ __  | |\n");
+    printw(
+        " | |   | '_ \\ / _ \\ / _ \\/ __|/ _ \\ | . ` | | | | '_ ` _ \\| '_ "
+        "\\ / "
+        "_ \\ '__| | |\n");
+    printw(" | \\__/\\ | | | (_) | (_) \\__ \\  __/ | |\\  | |_| | | | | | | "
+           "|_) |  "
+           "__/ |    |_|\n");
+    printw("  \\____/_| |_|\\___/ \\___/|___/\\___| \\_| \\_/\\__,_|_| |_| "
+           "|_|_.__/ "
+           "\\___|_|    (_)\n");
+    attroff(COLOR_PAIR(4));
+    attron(COLOR_PAIR(2));
+    draw(13, 20, "    -------------------------------");
+    draw(14, 20, "   |       1. Guliver'sTravels     |");
+    draw(15, 20, "    -------------------------------");
+    draw(16, 20, "    -------------------------------");
+    draw(17, 20, "   |       2. Rapunzel             |");
+    draw(18, 20, "    -------------------------------");
+    attroff(COLOR_PAIR(2));
+    curs_set(0);
+    move(20, 38);
     scanw("%d", &choice);
     fflush(stdin);
+    curs_set(1);
     return choice;
 }
 // store txt file line by line to array
@@ -123,7 +152,7 @@ int typing() {
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
-
+    curs_set(1);
     choice = choose();
     words = word(choice);
     for (j = 0; j < 100; j++)
@@ -214,7 +243,9 @@ int typing() {
                     continue;
                 }
                 buffer[i] = c;
+                attroff(A_BOLD);
                 addch(c);
+                attron(A_BOLD);
                 if (buffer[i] != words[m][i]) {
                     move(line - 1, i);
                     attron(COLOR_PAIR(1));
