@@ -85,7 +85,6 @@ void makeResource(void *none) {
                 "              ");
             if (stage == 3) {
                 bb_draw(10, 33, "Game Finish !");
-                stage++;
                 sleep(3);
                 pthread_exit(0);
             }
@@ -98,6 +97,7 @@ void makeResource(void *none) {
             bb_draw(24, 20, "    -------------------------------");
             attroff(COLOR_PAIR(1));
             move(23, 32);
+            memset(bb_answer, '\0', sizeof(bb_answer));
             count = 0;
             indx = 0;
             sleep_time--;
@@ -143,7 +143,6 @@ void makeResource(void *none) {
                     "(_|_|_)");
                 gameover = true;
                 pthread_exit(0);
-                return;
             }
             if (bb_answer[i][0] == '\0')
                 continue;
@@ -175,7 +174,12 @@ int bricks() {
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
-
+    gameover = false;
+    stage = 0;
+    sleep_time = 3;
+    count = 1;
+    indx = 0;
+    c = 0;
     attron(COLOR_PAIR(1));
     bb_draw(22, 20, "    -------------------------------");
     bb_draw(23, 20, "   | Enter :                       |");
@@ -244,11 +248,7 @@ int bricks() {
             refresh();
         }
     }
-    if (c == 0x1B) {
-        pthread_cancel(tid);
-    } else {
-        pthread_join(&tid, NULL);
-    }
+    pthread_detach(&tid);
     curs_set(1);
     clear();
     endwin();
