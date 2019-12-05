@@ -31,7 +31,7 @@ void draw(int row, int col, const char *str);
 void startGame();
 
 int hp = 100;
-int score = 0;
+int score = 49;
 char scoreText[3] = { 0 };
 int string_location = 0;
 int i;
@@ -40,7 +40,8 @@ char hpText[3] = { 0 };
 node *ptr = 0;
 char enterText[20] = { 0 };
 int enterHere = 0;
-int sleep_time = 1;
+int sleep_time = 2;
+pthread_t t1;
 
 void function(int signum) {
   reset();     // Release memory
@@ -134,28 +135,14 @@ void* thread_1(void *none) {
     temp = ptr;
 
     while (temp) {
-			draw(1 , 0, "   |");
-			draw(2 , 0, "   |");
-			draw(3 , 0, "   |");
-			draw(4 , 0, "   |");
-			draw(5 , 0, "   |");
-			draw(6 , 0, "   |");
-			draw(7 , 0, "   |");
-			draw(8 , 0, "   |");
-			draw(9 , 0, "   |");
-			draw(10, 0, "   |");
-			draw(11, 0, "   |");
-			draw(12, 0, "   |");
-			draw(13, 0, "   |");
-			draw(14, 0, "   |");
-			draw(15, 0, "   |");
+
 			draw(temp->row, temp->col, temp->str);
       temp = temp->link;
     }
 
     move(17, 12);
 
-    sleep(2);
+    sleep(t);
   }
 }
 
@@ -182,7 +169,44 @@ void findWord(char *str) {
 
   while (temp) {
     if (!strcmp(temp->str, str)) {
-      strcpy(temp->str, "");
+			score += strlen(temp->str);
+			strcpy(temp->str, "");
+			if (score > 50) {
+				sleep_time = 1;
+				pthread_cancel(t1);
+				pthread_create(&t1, NULL, &thread_1, NULL);
+			}
+			if (score > 100) {
+				pthread_cancel(t1);
+				draw(1 , 0, "                                                             ");
+				draw(2 , 0, "                    clear                                    ");
+				draw(3 , 0, "                                                             ");
+				draw(4 , 0, "                           clear                             ");
+				draw(5 , 0, "                                                             ");
+				draw(6 , 0, "                                                             ");
+				draw(7 , 0, "           clear                                             ");
+				draw(8 , 0, "                                          clear              ");
+				draw(9 , 0, "                                                             ");
+				draw(10, 0, "                                                             ");
+				draw(11, 0, "                      clear               clear              ");
+				draw(12, 0, "                                                             ");
+				draw(13, 0, "                                                             ");
+				draw(14, 0, "                                                             ");
+				draw(15, 0, "                                                             ");
+				draw(16, 0, "   ----------------------------------------------------------");
+				draw(17, 0, "   | Enter :                     | Score :      | HP :      |");
+				itoa(score, scoreText);
+				move(17, 43);
+				addstr("      ");
+				move(17, 43);
+				addstr(scoreText);
+			  itoa(hp, hpText);
+			  move(17, 55);
+			  addstr("     ");
+			  move(17, 55);
+			  addstr(hpText);
+				move(17, 12);
+			}
       return;
     }
     else
@@ -228,25 +252,9 @@ void draw(int row, int col,const char *str) {
 }
 
 void startGame() {
-  pthread_t t1;
 
   clear();
 	draw(0 , 0, "   ----------------------------------------------------------");
-	draw(1 , 0, "   |                                                        |");
-	draw(2 , 0, "   |                                                        |");
-	draw(3 , 0, "   |                                                        |");
-	draw(4 , 0, "   |                                                        |");
-	draw(5 , 0, "   |                                                        |");
-	draw(6 , 0, "   |                                                        |");
-	draw(7 , 0, "   |                                                        |");
-	draw(8 , 0, "   |                                                        |");
-	draw(9 , 0, "   |                                                        |");
-	draw(10, 0, "   |                                                        |");
-	draw(11, 0, "   |                                                        |");
-	draw(12, 0, "   |                                                        |");
-	draw(13, 0, "   |                                                        |");
-	draw(14, 0, "   |                                                        |");
-	draw(15, 0, "   |                                                        |");
   draw(16, 0, "   ----------------------------------------------------------");
   draw(17, 0, "   | Enter :                     | Score :      | HP :      |");
   draw(18, 0, "   ----------------------------------------------------------");
