@@ -31,6 +31,8 @@ void draw(int row, int col, const char *str);
 void startGame();
 
 int hp = 100;
+int score = 0;
+char scoreText[3] = { 0 };
 int string_location = 0;
 int i;
 int length = 0;
@@ -132,13 +134,28 @@ void* thread_1(void *none) {
     temp = ptr;
 
     while (temp) {
-      draw(temp->row, temp->col, temp->str);
+			draw(1 , 0, "   |");
+			draw(2 , 0, "   |");
+			draw(3 , 0, "   |");
+			draw(4 , 0, "   |");
+			draw(5 , 0, "   |");
+			draw(6 , 0, "   |");
+			draw(7 , 0, "   |");
+			draw(8 , 0, "   |");
+			draw(9 , 0, "   |");
+			draw(10, 0, "   |");
+			draw(11, 0, "   |");
+			draw(12, 0, "   |");
+			draw(13, 0, "   |");
+			draw(14, 0, "   |");
+			draw(15, 0, "   |");
+			draw(temp->row, temp->col, temp->str);
       temp = temp->link;
     }
 
     move(17, 12);
 
-    sleep(t);
+    sleep(2);
   }
 }
 
@@ -212,15 +229,33 @@ void draw(int row, int col,const char *str) {
 
 void startGame() {
   pthread_t t1;
-	int test = 5;
-	int *testtest;
 
   clear();
+	draw(0 , 0, "   ----------------------------------------------------------");
+	draw(1 , 0, "   |                                                        |");
+	draw(2 , 0, "   |                                                        |");
+	draw(3 , 0, "   |                                                        |");
+	draw(4 , 0, "   |                                                        |");
+	draw(5 , 0, "   |                                                        |");
+	draw(6 , 0, "   |                                                        |");
+	draw(7 , 0, "   |                                                        |");
+	draw(8 , 0, "   |                                                        |");
+	draw(9 , 0, "   |                                                        |");
+	draw(10, 0, "   |                                                        |");
+	draw(11, 0, "   |                                                        |");
+	draw(12, 0, "   |                                                        |");
+	draw(13, 0, "   |                                                        |");
+	draw(14, 0, "   |                                                        |");
+	draw(15, 0, "   |                                                        |");
+  draw(16, 0, "   ----------------------------------------------------------");
+  draw(17, 0, "   | Enter :                     | Score :      | HP :      |");
+  draw(18, 0, "   ----------------------------------------------------------");
 
-  draw(16, 0, "   ---------------------------------------------------------");
-  draw(17, 0, "   | Enter :                                    | HP :     |");
-  draw(18, 0, "   ---------------------------------------------------------");
-
+	itoa(score, scoreText);
+	move(17, 43);
+	addstr("      ");
+	move(17, 43);
+	addstr(scoreText);
   itoa(hp, hpText);
   move(17, 55);
   addstr("     ");
@@ -241,8 +276,18 @@ void startGame() {
           enterText[i] = '\0';
         }
 
-        draw(17, 0, "   | Enter :                                    | HP :     |");
-        move(17, 12);
+        draw(17, 0, "   | Enter :                     | Score :      | HP :      |");
+				itoa(score, scoreText);
+				move(17, 43);
+				addstr("      ");
+				move(17, 43);
+				addstr(scoreText);
+			  itoa(hp, hpText);
+			  move(17, 55);
+			  addstr("     ");
+			  move(17, 55);
+			  addstr(hpText);
+				move(17, 12);
 
         break;
       }
@@ -250,13 +295,13 @@ void startGame() {
         if (enterHere > 0) {
           enterText[--enterHere] = '\0';
           move(17, 12);
-          addstr("                 ");
+          addstr("                     ");
           move(17, 12);
           addstr(enterText);
         }
         else {
           move(17, 12);
-          addstr("                 ");
+          addstr("                     ");
         }
       }
       else {
