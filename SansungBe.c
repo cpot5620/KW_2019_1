@@ -33,7 +33,7 @@ void sdraw(int row, int col, const char *str);
 void startGame();
 
 int hp = 100;
-int score = 99;
+int score = 0;
 char scoreText[3] = {0};
 int string_location = 0;
 int i;
@@ -177,7 +177,7 @@ void findWord(char *str) {
                 pthread_cancel(t1);
                 pthread_create(&t1, NULL, &thread_1, NULL);
             }
-            if (score > 100) {
+            else if (score > 99) {
                 pthread_cancel(t1);
                 sdraw(
                     1, 0,
@@ -263,7 +263,6 @@ void findWord(char *str) {
                 while (a != 0x1B) {
                     a = getch();
                     refresh();
-                    endwin();
                     c = 0x1B;
                     break;
                 }
@@ -347,6 +346,7 @@ void startGame() {
             pthread_cancel(t1);
             refresh();
             endwin();
+            c = 0;
             break;
         }
         for (enterHere = 0; enterHere < 20 && c != 0x1B;) {
@@ -356,7 +356,7 @@ void startGame() {
                 enterText[enterHere] = '\0';
                 findWord(enterText);
 
-                for (i = 0; i < 20; i++) {
+                for (i = 0; i < enterHere+1; i++) {
                     enterText[i] = '\0';
                 }
 
@@ -366,12 +366,12 @@ void startGame() {
                     "   |");
                 itoa(score, scoreText);
                 move(17, 43);
-                addstr("      ");
+                addstr("   ");
                 move(17, 43);
                 addstr(scoreText);
                 itoa(hp, hpText);
                 move(17, 55);
-                addstr("     ");
+                addstr("   ");
                 move(17, 55);
                 addstr(hpText);
                 move(17, 12);
@@ -404,12 +404,3 @@ void startGame() {
     reset();
     clear();
 }
-
-// int main(int args, const char *argv[]) {
-//     initscr(); /// to use ncurses
-//     clear();   /// window clear
-//     start_color();
-//     init_pair(1, COLOR_RED, COLOR_BLACK);
-//     refresh(); /// window refresh
-//     startGame();
-// }
