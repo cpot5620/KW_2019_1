@@ -195,6 +195,7 @@ int resourceTake() {
     bool tf;
     int i = 0;
     int answer_index;
+
     signal(SIGINT, sIgHandler);
     initscr(); /// to use ncurses
     clear();   /// window clear
@@ -202,7 +203,15 @@ int resourceTake() {
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
     refresh(); /// window refresh
-
+    game_stage = 1;
+    Gameover = false;
+    sleepTime = 3;
+    computer_score = 0;
+    user_score = 0;
+    input = 0;
+    for (int k = 0; k < 25; k++)
+        memset(tt_answer[k], '\0', 20);
+    copy(tt_answer, tt_data);
     attron(COLOR_PAIR(1));
     tt_draw(22, 5, "    -------------------------------");
     tt_draw(23, 5, "   | Enter :                       |");
