@@ -14,9 +14,8 @@ const char *database[15] = {"Apple",  "Jung", "Cocaine", "Hello", "Elite",
                             "Knight", "Lake", "Monkey",  "Nope"};
 
 typedef struct node {
-    char str[MAX]; // 출력 문자
-    int row, col;  // 출력 행열
-    int mode;      // 출력 모드
+    char str[MAX]; // output string
+    int row, col;  // row col
     struct node *link;
 } node;
 
@@ -33,7 +32,7 @@ void sdraw(int row, int col, const char *str);
 void startGame();
 
 int hp = 100;
-int score = 0;
+int score = 99;
 char scoreText[3] = {0};
 int string_location = 0;
 int i;
@@ -177,7 +176,7 @@ void findWord(char *str) {
                 pthread_cancel(t1);
                 pthread_create(&t1, NULL, &thread_1, NULL);
             }
-            else if (score > 99) {
+            if (score > 99) {
                 pthread_cancel(t1);
                 sdraw(
                     1, 0,
@@ -319,6 +318,10 @@ void startGame() {
     refresh(); /// window refresh
     clear();
 
+    hp = 100;
+    score = 0;
+    c = 0;
+
     sdraw(0, 0,
           "            ----------------------------------------------------------");
     sdraw(16, 0,
@@ -363,7 +366,7 @@ void startGame() {
                 sdraw(
                     17, 0,
                     "            | Enter :                     | Score :      | HP :   "
-                    "            |");
+                    "   |");
                 itoa(score, scoreText);
                 move(17, 52);
                 addstr("   ");
