@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #define MAX 100
+
 const char *database[15] = {"Apple",  "Jung", "Cocaine", "Hello", "Elite",
                             "Fail",   "Game", "Halo",    "Icon",  "Jail",
                             "Knight", "Lake", "Monkey",  "Nope"};
@@ -31,13 +32,13 @@ const char *returnWord();
 void sdraw(int row, int col, const char *str);
 void startGame();
 
-int hp = 100;
-int score = 99;
+int userHp = 100;
+int score = 0;
 char scoreText[3] = {0};
 int string_location = 0;
 int i;
 int length = 0;
-char c;
+char cC;
 char hpText[3] = {0};
 node *ptr = 0;
 char enterText[20] = {0};
@@ -46,10 +47,14 @@ int psleep_time = 2;
 pthread_t t1;
 
 void function(int signum) {
-    reset();     // Release memory
-    curs_set(1); // cursor activation
-    endwin();    // consol window close
-    exit(1);     // program termination
+  if (signum == SIGINT) {
+      pthread_cancel(&t1);
+      reset();
+      curs_set(1);
+      clear();
+      endwin();
+      exit(0);
+  }
 }
 
 // Queue empty out and memory allocation
@@ -108,11 +113,11 @@ void addQueue(const char *str, int col) {
             temp = temp->link;
         }
 
-        hp -= strlen(temp->str);
+        userHp -= strlen(temp->str);
 
         hpText[2] = '\0';
 
-        itoa(hp, hpText);
+        itoa(userHp, hpText);
         move(17, 64);
         addstr("    ");
         move(17, 64);
@@ -129,10 +134,13 @@ void addQueue(const char *str, int col) {
 void *thread_1(void *none) {
     int t = psleep_time;
 
-    while (hp > 0) {
+    while (userHp > 0) {
+
         node *temp = 0;
         addQueue(returnWord(), (rand() % 40) + 17);
         temp = ptr;
+
+
 
         while (temp) {
 
@@ -252,7 +260,7 @@ void findWord(char *str) {
                 addstr("      ");
                 move(17, 52);
                 addstr(scoreText);
-                itoa(hp, hpText);
+                itoa(userHp, hpText);
                 move(17, 64);
                 addstr("     ");
                 move(17, 64);
@@ -262,8 +270,7 @@ void findWord(char *str) {
                 while (a != 0x1B) {
                     a = getch();
                     refresh();
-                    c = 0x1B;
-                    break;
+                    cC = 0x1B;
                 }
             }
             return;
@@ -311,19 +318,40 @@ void sdraw(int row, int col, const char *str) {
 }
 
 void startGame() {
+    signal(SIGINT, function);
     initscr(); /// to use ncurses
     clear();   /// window clear
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
+    curs_set(0);
     refresh(); /// window refresh
     clear();
 
-    hp = 100;
     score = 0;
-    c = 0;
+    cC = 0;
+    userHp = 100;
+    psleep_time = 2;
+    ptr = 0;
+    database[0] = "Apple";
+    database[1] = "Jung";
+    database[2] = "Cocaine";
+    database[3] = "Hello";
+    database[4] = "Elite";
+    database[5] = "Fail";
+    database[6] = "Game";
+    database[7] = "Halo";
+    database[8] = "Icon";
+    database[9] = "Jail";
+    database[10] = "Knight";
+    database[11] = "Lake";
+    database[12] = "Monkey";
+    database[13] = "Nope";
+    database[14] = "Lamp";
+
 
     sdraw(0, 0,
           "            ----------------------------------------------------------");
+
     sdraw(16, 0,
           "            ----------------------------------------------------------");
     sdraw(17, 0,
@@ -335,8 +363,7 @@ void startGame() {
     addstr("      ");
     move(17, 52);
     addstr(scoreText);
-
-    itoa(hp, hpText);
+    itoa(userHp, hpText);
     move(17, 64);
     addstr("     ");
     move(17, 64);
@@ -344,18 +371,18 @@ void startGame() {
 
     pthread_create(&t1, NULL, &thread_1, NULL);
 
-    while (hp > 0) {
-        if (c == 0x1B) {
+    while (userHp > 0) {
+        if (cC == 0x1B) {
             pthread_cancel(t1);
             refresh();
             endwin();
-            c = 0;
+            cC = 0;
             break;
         }
-        for (enterHere = 0; enterHere < 20 && c != 0x1B;) {
-            c = getchar();
+        for (enterHere = 0; enterHere < 20 && cC != 0x1B;) {
+            cC = getchar();
 
-            if (c == '\r') {
+            if (cC == '\r') {
                 enterText[enterHere] = '\0';
                 findWord(enterText);
 
@@ -372,7 +399,7 @@ void startGame() {
                 addstr("   ");
                 move(17, 52);
                 addstr(scoreText);
-                itoa(hp, hpText);
+                itoa(userHp, hpText);
                 move(17, 64);
                 addstr("   ");
                 move(17, 64);
@@ -380,7 +407,7 @@ void startGame() {
                 move(17, 21);
 
                 break;
-            } else if (c == 127) {
+            } else if (cC == 127) {
                 if (enterHere > 0) {
                     enterText[--enterHere] = '\0';
                     move(17, 21);
@@ -393,7 +420,7 @@ void startGame() {
                 }
             } else {
                 if (enterHere < 19) {
-                    enterText[enterHere++] = c;
+                    enterText[enterHere++] = cC;
                     move(17, 21);
                     addstr(enterText);
                 }
@@ -403,7 +430,7 @@ void startGame() {
     }
 
     pthread_join(t1, NULL);
-
+    curs_set(1);
     reset();
     clear();
 }
