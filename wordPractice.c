@@ -12,6 +12,8 @@ void draw(int row, int col, char *str) {
     addstr(str);
 }
 void printWordsPractice() {
+    start_color();
+    attron(COLOR_PAIR(3));
     printw("  --"
            "---------------------------------------------------------------"
            "----------\n");
@@ -36,6 +38,7 @@ void printWordsPractice() {
     printw("  --"
            "---------------------------------------------------------------"
            "----------\n");
+    attroff(COLOR_PAIR(3));
 }
 int wordPractice() {
     int index = 0;
@@ -68,7 +71,7 @@ int wordPractice() {
     }
     printWordsPractice();
     index++;
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(2));
     draw(10, 20, "    -------------------------------");
     draw(11, 20, "   | Word :                        |");
     draw(12, 20, "    -------------------------------");
@@ -77,11 +80,13 @@ int wordPractice() {
     for (int j = 0; answer[j] != '\0'; j++) {
         addch(answer[j]);
     }
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(2));
+    attron(COLOR_PAIR(3));
     draw(18, 20, "    -------------------------------");
     draw(19, 20, "   | Enter :                       |");
     draw(20, 20, "    -------------------------------");
     move(19, j);
+    attroff(COLOR_PAIR(3));
 
     refresh();
     time(&start);
@@ -114,7 +119,7 @@ int wordPractice() {
                 index = 0;
             else
                 index++;
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(2));
             draw(10, 20, "    -------------------------------");
             draw(11, 20, "   | Word :                        |");
             draw(12, 20, "    -------------------------------");
@@ -123,11 +128,13 @@ int wordPractice() {
             for (int j = 0; answer[j] != '\0'; j++) {
                 addch(answer[j]);
             }
-            attroff(COLOR_PAIR(1));
+            attroff(COLOR_PAIR(2));
+            attron(COLOR_PAIR(3));
             draw(18, 20, "    -------------------------------");
             draw(19, 20, "   | Enter :                       |");
             draw(20, 20, "    -------------------------------");
             move(19, j);
+            attroff(COLOR_PAIR(3));
 
             time(&end);
             gap = end - start;

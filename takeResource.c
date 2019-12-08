@@ -27,7 +27,6 @@ void tt_draw(int row, int col, char *str) {
 int game_stage = 1;
 pthread_t tttid = 0;
 pthread_t ttid = 0;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int Row = 20;
 char tt_data[35][20] = {
@@ -52,21 +51,24 @@ void printResource(void *none) {
         if (input == 0x1B)
             pthread_exit(0);
         if (computer_score + user_score == 35) {
-
             clear();
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(4));
             tt_draw(22, 5, "    -------------------------------");
             tt_draw(23, 5, "   | Enter :                       |");
             tt_draw(24, 5, "    -------------------------------");
-            attroff(COLOR_PAIR(1));
+            attroff(COLOR_PAIR(4));
 
             refresh();
             move(23, 18);
             if (user_score > computer_score) {
-                pthread_mutex_lock(&mutex);
-                if (game_stage == 4) {
-                    clear();
-                    refresh();
+                mvprintw(4, 4, "__   __            _    _ _         _  ");
+                mvprintw(5, 4, "\\ \\ / /           | |  | (_)       | | ");
+                mvprintw(6, 4, " \\ V /___  _   _  | |  | |_ _ __   | | ");
+                mvprintw(7, 4, "  \\ // _ \\| | | | | |/\\| | | '_ \\  | | ");
+                mvprintw(8, 4, "  | | (_) | |_| | \\  /\\  / | | | | |_| ");
+                mvprintw(9, 4, "  \\_/\\___/ \\__,_|  \\/  \\/|_|_| |_| (_) ");
+
+                if (game_stage == 3) {
                     mvprintw(4, 4,
                              " _____                                           "
                              "   _ ");
@@ -87,20 +89,11 @@ void printResource(void *none) {
                     mvprintw(9, 4,
                              " \\____/\\__,_|_| |_| |_|\\___|  \\___/ \\_/ "
                              "\\___|_|    (_)");
-                    clear();
-                    refresh();
-                    pthread_mutex_unlock(&mutex);
+                    game_stage++;
                     sleep(3);
                     pthread_exit(0);
-                    Gameover = true;
                 }
-                mvprintw(4, 4, "__   __            _    _ _         _  ");
-                mvprintw(5, 4, "\\ \\ / /           | |  | (_)       | | ");
-                mvprintw(6, 4, " \\ V /___  _   _  | |  | |_ _ __   | | ");
-                mvprintw(7, 4, "  \\ // _ \\| | | | | |/\\| | | '_ \\  | | ");
-                mvprintw(8, 4, "  | | (_) | |_| | \\  /\\  / | | | | |_| ");
-                mvprintw(9, 4, "  \\_/\\___/ \\__,_|  \\/  \\/|_|_| |_| (_) ");
-                pthread_mutex_unlock(&mutex);
+
             } else {
                 mvprintw(
                     4, 4,
@@ -121,20 +114,17 @@ void printResource(void *none) {
                          " \\____/\\__,_|_| |_| |_|\\___|  \\___/ \\_/ "
                          "\\___|_|    (_)");
                 sleep(3);
-                clear();
-                refresh();
                 pthread_exit(0);
-                Gameover = true;
             }
             tt_draw(15, 12, "Please Wait... Moving to next stage...");
 
             sleep(3);
             clear();
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(4));
             tt_draw(22, 5, "    -------------------------------");
             tt_draw(23, 5, "   | Enter :                       |");
             tt_draw(24, 5, "    -------------------------------");
-            attroff(COLOR_PAIR(1));
+            attroff(COLOR_PAIR(4));
 
             move(23, 18);
             sleepTime--;
@@ -190,14 +180,11 @@ void computer(void *none) {
         }
         sleep(sleepTime);
         if (computer_score + user_score == 35) {
-
             copy(tt_answer, tt_data);
-
-            if (game_stage == 4) {
+            sleep(sleepTime);
+            if (game_stage == 3) {
                 pthread_exit(0);
             }
-
-            sleep(3);
         }
     }
 }
@@ -225,13 +212,13 @@ int resourceTake() {
     for (int k = 0; k < 25; k++)
         memset(tt_answer[k], '\0', 20);
     copy(tt_answer, tt_data);
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(4));
     tt_draw(22, 5, "    -------------------------------");
     tt_draw(23, 5, "   | Enter :                       |");
     tt_draw(24, 5, "    -------------------------------");
 
     move(23, j);
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(4));
 
     attron(COLOR_PAIR(2));
     mvprintw(20, 45, "-------------------------------");
@@ -245,7 +232,7 @@ int resourceTake() {
     copy(tt_answer, tt_data);
     pthread_create(&tttid, NULL, printResource, NULL);
     pthread_create(&ttid, NULL, computer, NULL);
-    while (input != 0x1B || Gameover) {
+    while (input != 0x1B) {
         input = getchar();
         if (game_stage == 4 || Gameover) {
             sleep(3);
@@ -270,13 +257,13 @@ int resourceTake() {
             for (int j = 0; j < 20; j++) {
                 buffer[j] = '\0'; /// to clear array
             }
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(4));
             tt_draw(22, 5, "    -------------------------------");
             tt_draw(23, 5, "   | Enter :                       |");
             tt_draw(24, 5, "    -------------------------------");
 
             move(23, j);
-            attroff(COLOR_PAIR(1));
+            attroff(COLOR_PAIR(4));
             attron(COLOR_PAIR(2));
             mvprintw(20, 45, "-------------------------------");
             mvprintw(21, 45, "    COMPUTER    |      ME      ");
