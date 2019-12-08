@@ -12,24 +12,30 @@ void draw(int row, int col, char *str) {
     addstr(str);
 }
 void printWordsPractice() {
-    printw("       _    _               _        ______               _ "
+    printw("  --"
+           "---------------------------------------------------------------"
+           "----------\n");
+    printw("        _    _               _        ______               _ "
            "  _  "
            "        \n");
-    printw("      | |  | |             | |       | ___ \\             | "
+    printw("       | |  | |             | |       | ___ \\             | "
            "| (_) "
            "        \n");
-    printw("      | |  | | ___  _ __ __| |___    | |_/ / __ __ _  ___| "
+    printw("       | |  | | ___  _ __ __| |___    | |_/ / __ __ _  ___| "
            "|_ _  "
            "___ ___ \n");
-    printw("      | |/\\| |/ _ \\| '__/ _` / __|   |  __/ '__/ _` |/ "
+    printw("       | |/\\| |/ _ \\| '__/ _` / __|   |  __/ '__/ _` |/ "
            "__| __| "
            "|/ __/ _ \\\n");
-    printw("      \\  /\\  / (_) | | | (_| \\__ \\   | |  | | | (_| | "
+    printw("       \\  /\\  / (_) | | | (_| \\__ \\   | |  | | | (_| | "
            "(__| "
            "|_| | "
            "(_|  __/\n");
-    printw("       \\/  \\/ \\___/|_|  \\__,_|___/   \\_|  |_|  "
+    printw("        \\/  \\/ \\___/|_|  \\__,_|___/   \\_|  |_|  "
            "\\__,_|\\___|\\__|_|\\___\\___|\n");
+    printw("  --"
+           "---------------------------------------------------------------"
+           "----------\n");
 }
 int wordPractice() {
     int index = 0;
@@ -63,19 +69,19 @@ int wordPractice() {
     printWordsPractice();
     index++;
     attron(COLOR_PAIR(1));
-    draw(9, 20, "    -------------------------------");
-    draw(10, 20, "   | Word :                        |");
-    draw(11, 20, "    -------------------------------");
+    draw(10, 20, "    -------------------------------");
+    draw(11, 20, "   | Word :                        |");
+    draw(12, 20, "    -------------------------------");
 
-    move(10, 33);
+    move(11, 33);
     for (int j = 0; answer[j] != '\0'; j++) {
         addch(answer[j]);
     }
     attroff(COLOR_PAIR(1));
-    draw(16, 20, "    -------------------------------");
-    draw(17, 20, "   | Enter :                       |");
     draw(18, 20, "    -------------------------------");
-    move(17, j);
+    draw(19, 20, "   | Enter :                       |");
+    draw(20, 20, "    -------------------------------");
+    move(19, j);
 
     refresh();
     time(&start);
@@ -109,19 +115,19 @@ int wordPractice() {
             else
                 index++;
             attron(COLOR_PAIR(1));
-            draw(9, 20, "    -------------------------------");
-            draw(10, 20, "   | Word :                        |");
-            draw(11, 20, "    -------------------------------");
+            draw(10, 20, "    -------------------------------");
+            draw(11, 20, "   | Word :                        |");
+            draw(12, 20, "    -------------------------------");
 
-            move(10, 33);
+            move(11, 33);
             for (int j = 0; answer[j] != '\0'; j++) {
                 addch(answer[j]);
             }
             attroff(COLOR_PAIR(1));
-            draw(16, 20, "    -------------------------------");
-            draw(17, 20, "   | Enter :                       |");
             draw(18, 20, "    -------------------------------");
-            move(17, j);
+            draw(19, 20, "   | Enter :                       |");
+            draw(20, 20, "    -------------------------------");
+            move(19, j);
 
             time(&end);
             gap = end - start;
@@ -129,11 +135,11 @@ int wordPractice() {
             per = (float)tot - (float)red;
             per /= (float)tot;
             per *= 100;
-            move(13, 1);
+            move(18, 59);
             printw("time : %.1f sec\n", (float)gap);
-            move(14, 1);
+            move(19, 59);
             printw("ta-su : %.1f\n", tasu);
-            move(15, 1);
+            move(20, 59);
             printw("accuracy : %.1f %\n", per);
             typing = 0;
             tasu = 1;
@@ -147,15 +153,15 @@ int wordPractice() {
             j++;
             i++;
             typing++;
-            move(17, j);
+            move(19, j);
             addch(c);
             refresh();
         } else { /// if input is backspacebar
             if (j == 32)
                 continue;
-            move(17, j);
+            move(19, j);
             addch(*" ");
-            move(17, j);
+            move(19, j);
             j--;
             i--;
             typing--;
