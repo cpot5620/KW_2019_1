@@ -47,14 +47,14 @@ int psleep_time = 2;
 pthread_t t1;
 
 void function(int signum) {
-  if (signum == SIGINT) {
-      pthread_cancel(&t1);
-      reset();
-      curs_set(1);
-      clear();
-      endwin();
-      exit(0);
-  }
+    if (signum == SIGINT) {
+        pthread_cancel(&t1);
+        reset();
+        curs_set(1);
+        clear();
+        endwin();
+        exit(0);
+    }
 }
 
 // Queue empty out and memory allocation
@@ -140,8 +140,6 @@ void *thread_1(void *none) {
         addQueue(returnWord(), (rand() % 40) + 17);
         temp = ptr;
 
-
-
         while (temp) {
 
             sdraw(temp->row, temp->col, temp->str);
@@ -186,75 +184,75 @@ void findWord(char *str) {
             }
             if (score > 99) {
                 pthread_cancel(t1);
-                sdraw(
-                    1, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    2, 0,
-                    "                             clear                                "
-                    "    ");
-                sdraw(
-                    3, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    4, 0,
-                    "                                    clear                         "
-                    "    ");
-                sdraw(
-                    5, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    6, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    7, 0,
-                    "                    clear                                         "
-                    "    ");
-                sdraw(
-                    8, 0,
-                    "                                                   clear          "
-                    "    ");
-                sdraw(
-                    9, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    10, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    11, 0,
-                    "                               clear               clear          "
-                    "    ");
-                sdraw(
-                    12, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    13, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    14, 0,
-                    "                                                                  "
-                    "    ");
-                sdraw(
-                    15, 0,
-                    "                                                                  "
-                    "    ");
+                sdraw(1, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(2, 0,
+                      "                             clear                      "
+                      "          "
+                      "    ");
+                sdraw(3, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(4, 0,
+                      "                                    clear               "
+                      "          "
+                      "    ");
+                sdraw(5, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(6, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(7, 0,
+                      "                    clear                               "
+                      "          "
+                      "    ");
+                sdraw(8, 0,
+                      "                                                   "
+                      "clear          "
+                      "    ");
+                sdraw(9, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(10, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(11, 0,
+                      "                               clear               "
+                      "clear          "
+                      "    ");
+                sdraw(12, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(13, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(14, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
+                sdraw(15, 0,
+                      "                                                        "
+                      "          "
+                      "    ");
                 sdraw(
                     16, 0,
                     "            "
                     "---------------------------------------------------------"
                     "-");
-                sdraw(
-                    17, 0,
-                    "            | Enter :                     | Score :      | HP :   "
-                    "   |");
+                sdraw(17, 0,
+                      "            | Enter :                     | Score :     "
+                      " | HP :   "
+                      "   |");
                 itoa(score, scoreText);
                 move(17, 52);
                 addstr("      ");
@@ -333,7 +331,7 @@ void startGame() {
     psleep_time = 2;
     ptr = 0;
     database[0] = "Apple";
-    database[1] = "Jung";
+    database[1] = "Kong";
     database[2] = "Cocaine";
     database[3] = "Hello";
     database[4] = "Elite";
@@ -348,16 +346,21 @@ void startGame() {
     database[13] = "Nope";
     database[14] = "Lamp";
 
-
+    attron(COLOR_PAIR(3));
     sdraw(0, 0,
-          "            ----------------------------------------------------------");
+          "            "
+          "----------------------------------------------------------");
 
     sdraw(16, 0,
-          "            ----------------------------------------------------------");
+          "            "
+          "----------------------------------------------------------");
     sdraw(17, 0,
-          "            | Enter :                     | Score :      | HP :      |");
+          "            | Enter :                     | Score :      | HP :     "
+          " |");
     sdraw(18, 0,
-          "            ----------------------------------------------------------");
+          "            "
+          "----------------------------------------------------------");
+    attroff(COLOR_PAIR(3));
     itoa(score, scoreText);
     move(17, 52);
     addstr("      ");
@@ -386,14 +389,15 @@ void startGame() {
                 enterText[enterHere] = '\0';
                 findWord(enterText);
 
-                for (i = 0; i < enterHere+1; i++) {
+                for (i = 0; i < enterHere + 1; i++) {
                     enterText[i] = '\0';
                 }
-
-                sdraw(
-                    17, 0,
-                    "            | Enter :                     | Score :      | HP :   "
-                    "   |");
+                attron(COLOR_PAIR(3));
+                sdraw(17, 0,
+                      "            | Enter :                     | Score :     "
+                      " | HP :   "
+                      "   |");
+                attroff(COLOR_PAIR(3));
                 itoa(score, scoreText);
                 move(17, 52);
                 addstr("   ");
